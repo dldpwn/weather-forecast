@@ -1,6 +1,6 @@
 import streamlit as st
 
-# 1. 페이지 설정 (initial_sidebar_state="collapsed"로 평소엔 사이드바 숨김)
+# 1. 페이지 설정
 st.set_page_config(
     page_title="영양소 & 화학 반응 계산기",
     page_icon="🧪",
@@ -13,17 +13,16 @@ st.markdown("""
     
 """, unsafe_allow_html=True)
 
-# --- 사이드바 영역 (원할 때 열고 닫을 수 있음) ---
+# --- 사이드바 영역 ---
 with st.sidebar:
     st.markdown("### 🧭 메뉴 이동")
     st.info("💡 왼쪽 위의 **`>` (화살표)**를 누르면 사이드바를 다시 숨길 수 있어요!")
     st.page_link("main.py", label="🧪 영양소 & 화학 계산기", icon="🧮")
-    # 파일 이름을 반영하여 경로를 pages/calculate.py로 수정했습니다.
-    st.page_link("pages/calculate.py", label="📄 계산 서브 페이지", icon="📄")
+    st.page_link("pages/calculate.py", label="🥗 맞춤형 식단 플래너", icon="🥗")
 
 # --- 메인 화면 ---
 st.title("🧪 내 몸에 맞는 영양소 & 화학 반응 계산기")
-st.write("나의 신체 정보를 입력하고, 하루 대사량과 권장 영양소, 그리고 몸속 화학 반응을 확인해보세요!")
+st.write("나의 신체 정보를 입력하고, 비만도(BMI), 하루 대사량, 그리고 몸속 화학 반응을 확인해보세요!")
 st.divider()
 
 st.subheader("1. 신체 정보 입력")
@@ -53,27 +52,49 @@ activity_factors = {
 st.write("")
 
 if st.button("계산 및 분석하기", use_container_width=True):
+    # 1. BMI 계산 (체중(kg) / 키(m의 제곱))
+    height_m = height / 100.0
+    bmi = weight / (height_m ** 2)
+
+    # BMI 판정
+    if bmi < 18.5:
+        bmi_status = "저체중"
+    elif 18.5 <= bmi < 23:
+        bmi_status = "정상"
+    elif 23 <= bmi < 25:
+        bmi_status = "과체중"
+    else:
+        bmi_status = "비만"
+
+    # 2. 기초대사량(BMR) 계산
     if gender == "남성":
         bmr = (10 * weight) + (6.25 * height) - (5 * age) + 5
     else:
         bmr = (10 * weight) + (6.25 * height) - (5 * age) - 161
 
+    # 3. 일일 총 에너지 소비량(TDEE) 계산
     tdee = bmr * activity_factors[activity_level]
-    carbs_g = (tdee * 0.5) / 4
-    protein_g = (tdee * 0.3) / 4
-    fat_g = (tdee * 0.2) / 9
+
+    # 세션 상태에 계산값 저장 (서브 페이지로 넘겨줄 때 유용하게 쓰일 수 있습니다)
+    st.session_state["calculated_tdee"] = tdee
 
     st.divider()
-    st.subheader("📊 계산 결과")
+    st.subheader("📊 신체 측정 및 대사량 결과")
 
-    m1, m2 = st.columns(2)
+    # 결과 지표 표시
+    m1, m2, m3 = st.columns(3)
     with m1:
-        st.metric(label="기초대사량 (BMR)", value=f"{bmr:.1f} kcal")
+        st.metric(label="체질량지수 (BMI)", value=f"{bmi:.1f}", delta=bmi_status)
     with m2:
+        st.metric(label="기초대사량 (BMR)", value=f"{bmr:.1f} kcal")
+    with m3:
         st.metric(label="일일 총 에너지 소비량 (TDEE)", value=f"{tdee:.1f} kcal")
 
     st.write("")
     st.markdown("#### 🥗 권장 영양소 섭취량")
+    carbs_g = (tdee * 0.5) / 4
+    protein_g = (tdee * 0.3) / 4
+    fat_g = (tdee * 0.2) / 9
     st.write(f"- **탄수화물**: 약 **{carbs_g:.1f}g** (주요 에너지원)")
     st.write(f"- **단백질**: 약 **{protein_g:.1f}g** (신체 조직 구성 및 효소)")
     st.write(f"- **지방**: 약 **{fat_g:.1f}g** (에너지 저장 및 세포막 구성)")
@@ -82,7 +103,19 @@ if st.button("계산 및 분석하기", use_container_width=True):
     st.subheader("🔬 교과 연계: 우리 몸속 화학 반응")
     st.info(
         "**1. 세포 호흡 (에너지 생성 반응)**\n"
-        "우리가 섭취한 탄수화물(포도당)은 미토콘드리아에서 산소와 반응하여 ATP 에너지를 합성합니다.\n\n"
+        "우리가 섭취한 포도당은 미토콘드리아에서 산소와 반응하여 ATP 에너지를 합성합니다.\n\n"
         "**2. 단백질의 소화와 합성**\n"
         "섭취한 단백질은 아미노산으로 분해된 후, 체내에서 근육과 생체 촉매(효소)로 재조합됩니다."
     )
+
+    st.divider()
+    
+    # --- 서브 페이지 이동 안내 및 버튼 ---
+    st.success("✨ 계산이 완료되었습니다! 내 칼로리에 맞춘 맞춤형 식단을 확인하러 가볼까요?")
+    
+    # Streamlit 최신 버전의 page_link를 버튼 형태로 혹은 안내와 함께 제공
+    col_btn1, col_btn2 = st.columns([2, 1])
+    with col_btn1:
+        st.write("👉 우측의 버튼을 누르면 **맞춤형 식단 플래너** 페이지로 이동합니다.")
+    with col_btn2:
+        st.page_link("pages/calculate.py", label="식단 플래너로 이동 ➡️", icon="🥗")
