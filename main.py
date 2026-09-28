@@ -1,17 +1,31 @@
 import streamlit as st
 
-# 1. 페이지 기본 설정
+# 1. 페이지 설정 (initial_sidebar_state="collapsed"로 평소엔 사이드바 숨김)
 st.set_page_config(
     page_title="영양소 & 화학 반응 계산기",
     page_icon="🧪",
-    layout="centered"
+    layout="centered",
+    initial_sidebar_state="collapsed" 
 )
 
+# 2. 디자인 및 사이드바 스타일 적용
+st.markdown("""
+    
+""", unsafe_allow_html=True)
+
+# --- 사이드바 영역 (원할 때 열고 닫을 수 있음) ---
+with st.sidebar:
+    st.markdown("### 🧭 메뉴 이동")
+    st.info("💡 왼쪽 위의 **`>` (화살표)**를 누르면 사이드바를 다시 숨길 수 있어요!")
+    st.page_link("main.py", label="🧪 영양소 & 화학 계산기", icon="🧮")
+    # 파일 이름을 반영하여 경로를 pages/calculate.py로 수정했습니다.
+    st.page_link("pages/calculate.py", label="📄 계산 서브 페이지", icon="📄")
+
+# --- 메인 화면 ---
 st.title("🧪 내 몸에 맞는 영양소 & 화학 반응 계산기")
 st.write("나의 신체 정보를 입력하고, 하루 대사량과 권장 영양소, 그리고 몸속 화학 반응을 확인해보세요!")
 st.divider()
 
-# 2. 사용자 신체 정보 입력 섹션
 st.subheader("1. 신체 정보 입력")
 col1, col2 = st.columns(2)
 
@@ -25,16 +39,9 @@ with col2:
 
 activity_level = st.selectbox(
     "평소 활동량",
-    [
-        "거의 운동하지 않음",
-        "가벼운 운동 (주 1~3회)",
-        "보통 운동 (주 3~5회)",
-        "적극적 운동 (주 6~7회)",
-        "매우 격렬한 운동"
-    ]
+    ["거의 운동하지 않음", "가벼운 운동 (주 1~3회)", "보통 운동 (주 3~5회)", "적극적 운동 (주 6~7회)", "매우 격렬한 운동"]
 )
 
-# 활동량별 계수 매핑
 activity_factors = {
     "거의 운동하지 않음": 1.2,
     "가벼운 운동 (주 1~3회)": 1.375,
@@ -45,21 +52,16 @@ activity_factors = {
 
 st.write("")
 
-# 3. 계산 버튼 및 로직
 if st.button("계산 및 분석하기", use_container_width=True):
-    # 미플린-세인트 조르(Mifflin-St Jeor) 공식으로 기초대사량(BMR) 계산
     if gender == "남성":
         bmr = (10 * weight) + (6.25 * height) - (5 * age) + 5
     else:
         bmr = (10 * weight) + (6.25 * height) - (5 * age) - 161
 
-    # 일일 총 에너지 소비량(TDEE) 계산
     tdee = bmr * activity_factors[activity_level]
-
-    # 권장 영양소 비율 계산 (탄수화물 50%, 단백질 30%, 지방 20% 기준)
-    carbs_g = (tdee * 0.5) / 4   # 탄수화물 1g당 4kcal
-    protein_g = (tdee * 0.3) / 4 # 단백질 1g당 4kcal
-    fat_g = (tdee * 0.2) / 9     # 지방 1g당 9kcal
+    carbs_g = (tdee * 0.5) / 4
+    protein_g = (tdee * 0.3) / 4
+    fat_g = (tdee * 0.2) / 9
 
     st.divider()
     st.subheader("📊 계산 결과")
@@ -77,14 +79,10 @@ if st.button("계산 및 분석하기", use_container_width=True):
     st.write(f"- **지방**: 약 **{fat_g:.1f}g** (에너지 저장 및 세포막 구성)")
 
     st.divider()
-    
-    # 4. 교과 연계 탐구 포인트 (세특 작성에 도움될 과학적 설명)
     st.subheader("🔬 교과 연계: 우리 몸속 화학 반응")
     st.info(
         "**1. 세포 호흡 (에너지 생성 반응)**\n"
-        "우리가 섭취한 탄수화물(포도당)은 소화되어 세포로 전달되고, 미토콘드리아에서 산소와 반응하여 "
-        "이산화탄소와 물로 분해됩니다. 이 과정에서 발생하는 화학 에너지가 생명활동에 쓰이는 ATP를 합성합니다.\n\n"
+        "우리가 섭취한 탄수화물(포도당)은 미토콘드리아에서 산소와 반응하여 ATP 에너지를 합성합니다.\n\n"
         "**2. 단백질의 소화와 합성**\n"
-        "섭취한 단백질은 아미노산으로 분해(가수분해)된 후, 체내로 흡수되어 유전 정보에 따라 근육, 호르몬, "
-        "화학 반응을 돕는 생체 촉매(효소)로 재조합됩니다."
+        "섭취한 단백질은 아미노산으로 분해된 후, 체내에서 근육과 생체 촉매(효소)로 재조합됩니다."
     )
