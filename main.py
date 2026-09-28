@@ -8,7 +8,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed" 
 )
 
-# 2. 디자인 및 사이드바 스타일 적용 (앱 전체 폰트 및 글자 크기 강제 통일)
+# 2. 스트림릿 컴포넌트 전용 CSS 강제 적용 스타일
 st.markdown("""
     
 """, unsafe_allow_html=True)
@@ -98,6 +98,15 @@ if st.button("계산 및 분석하기", use_container_width=True):
     st.write(f"- **탄수화물**: 약 **{carbs_g:.1f}g** (주요 에너지원)")
     st.write(f"- **단백질**: 약 **{protein_g:.1f}g** (신체 조직 구성 및 효소)")
     st.write(f"- **지방**: 약 **{fat_g:.1f}g** (에너지 저장 및 세포막 구성)")
+
+    st.divider()
+    st.subheader("🔬 교과 연계: 우리 몸속 화학 반응")
+    st.info(
+        "**1. 세포 호흡 (에너지 생성 반응)**\n"
+        "우리가 섭취한 포도당은 미토콘드리아에서 산소와 반응하여 ATP 에너지를 합성합니다.\n\n"
+        "**2. 단백질의 소화와 합성**\n"
+        "섭취한 단백질은 아미노산으로 분해된 후, 체내에서 근육과 생체 촉매(효소)로 재조합됩니다."
+    )
 
     st.divider()
     
