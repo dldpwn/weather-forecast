@@ -75,7 +75,7 @@ if st.button("계산 및 분석하기", use_container_width=True):
     # 3. 일일 총 에너지 소비량(TDEE) 계산
     tdee = bmr * activity_factors[activity_level]
 
-    # 세션 상태에 계산값 저장 (서브 페이지로 넘겨줄 때 유용하게 쓰일 수 있습니다)
+    # 세션 상태에 계산값 저장
     st.session_state["calculated_tdee"] = tdee
 
     st.divider()
@@ -113,7 +113,6 @@ if st.button("계산 및 분석하기", use_container_width=True):
     # --- 서브 페이지 이동 안내 및 버튼 ---
     st.success("✨ 계산이 완료되었습니다! 내 칼로리에 맞춘 맞춤형 식단을 확인하러 가볼까요?")
     
-    # Streamlit 최신 버전의 page_link를 버튼 형태로 혹은 안내와 함께 제공
     col_btn1, col_btn2 = st.columns([2, 1])
     with col_btn1:
         st.write("👉 우측의 버튼을 누르면 **맞춤형 식단 플래너** 페이지로 이동합니다.")
