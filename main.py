@@ -8,7 +8,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed" 
 )
 
-# 2. 디자인 및 사이드바 스타일 적용
+# 2. 디자인 및 사이드바 스타일 적용 (헤더 폰트 크기 통일화 포함)
 st.markdown("""
     
 """, unsafe_allow_html=True)
@@ -98,7 +98,6 @@ if st.button("계산 및 분석하기", use_container_width=True):
     st.write(f"- **탄수화물**: 약 **{carbs_g:.1f}g** (주요 에너지원)")
     st.write(f"- **단백질**: 약 **{protein_g:.1f}g** (신체 조직 구성 및 효소)")
     st.write(f"- **지방**: 약 **{fat_g:.1f}g** (에너지 저장 및 세포막 구성)")
-
 
 
     st.divider()
