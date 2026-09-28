@@ -1,72 +1,90 @@
 import streamlit as st
-import datetime
 
+# 1. 페이지 기본 설정
 st.set_page_config(
-    page_title="Weather Forecast Lab",
-    page_icon="⛅",
-    layout="wide"
+    page_title="영양소 & 화학 반응 계산기",
+    page_icon="🧪",
+    layout="centered"
 )
 
-st.title("⛅ Smart Weather Forecast Lab")
-st.markdown("---")
+st.title("🧪 내 몸에 맞는 영양소 & 화학 반응 계산기")
+st.write("나의 신체 정보를 입력하고, 하루 대사량과 권장 영양소, 그리고 몸속 화학 반응을 확인해보세요!")
+st.divider()
 
-# 계층형 지역 데이터 구조
-region_data = {
-    "서울특별시": {
-        "동작구": ["신대방동", "노량진동", "흑석동", "상도동"],
-        "중구": ["명동", "을지로동", "남대문로동", "장충동"]
-    },
-    "부산광역시": {
-        "해운대구": ["우동", "중동", "좌동", "반송동"],
-        "수영구": ["남천동", "수영동", "망미동", "민락동"]
-    }
-}
-
-# 메인 화면에 3개의 열로 나누어 지역 선택 바 배치
-st.subheader("📍 지역 선택")
-col_sido, col_sigungu, col_dong = st.columns(3)
-
-with col_sido:
-    selected_sido = st.selectbox("시/도 선택", list(region_data.keys()))
-
-with col_sigungu:
-    sigungu_list = list(region_data[selected_sido].keys())
-    selected_sigungu = st.selectbox("시/군/구 선택", sigungu_list)
-
-with col_dong:
-    dong_list = region_data[selected_sido][selected_sigungu]
-    selected_dong = st.selectbox("읍/면/동 선택", dong_list)
-
-full_location = f"{selected_sido} {selected_sigungu} {selected_dong}"
-st.markdown("---")
-
-# 현재 조회 위치 및 시간 표시
-now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
-st.text(f"📍 현재 조회 위치: {full_location} (기준 시각: {now})")
-
-# 상단 메트릭 지표 출력
-col1, col2, col3 = st.columns(3)
+# 2. 사용자 신체 정보 입력 섹션
+st.subheader("1. 신체 정보 입력")
+col1, col2 = st.columns(2)
 
 with col1:
-    st.metric(label="현재 기온", value="25.8 °C", delta="-3 °C")
+    gender = st.selectbox("성별", ["남성", "여성"])
+    age = st.number_input("나이 (세)", min_value=10, max_value=100, value=17)
 
 with col2:
-    st.metric(label="습도", value="39 %")
+    height = st.number_input("키 (cm)", min_value=100.0, max_value=220.0, value=170.0)
+    weight = st.number_input("체중 (kg)", min_value=30.0, max_value=150.0, value=60.0)
 
-with col3:
-    st.metric(label="자외선(UV) 지수", value="보통 (3.5)")
+activity_level = st.selectbox(
+    "평소 활동량",
+    [
+        "거의 운동하지 않음",
+        "가벼운 운동 (주 1~3회)",
+        "보통 운동 (주 3~5회)",
+        "적극적 운동 (주 6~7회)",
+        "매우 격렬한 운동"
+    ]
+)
 
-st.markdown("---")
+# 활동량별 계수 매핑
+activity_factors = {
+    "거의 운동하지 않음": 1.2,
+    "가벼운 운동 (주 1~3회)": 1.375,
+    "보통 운동 (주 3~5회)": 1.55,
+    "적극적 운동 (주 6~7회)": 1.725,
+    "매우 격렬한 운동": 1.9
+}
 
-# 과학적 환경 분석 섹션
-st.subheader("🔬 대기 환경 및 화학 지표 분석")
-col_a, col_b, col_c = st.columns(3)
+st.write("")
 
-with col_a:
-    st.metric(label="초미세먼지 (PM2.5)", value="11 µg/m³", delta="좋음", delta_color="normal")
+# 3. 계산 버튼 및 로직
+if st.button("계산 및 분석하기", use_container_width=True):
+    # 미플린-세인트 조르(Mifflin-St Jeor) 공식으로 기초대사량(BMR) 계산
+    if gender == "남성":
+        bmr = (10 * weight) + (6.25 * height) - (5 * age) + 5
+    else:
+        bmr = (10 * weight) + (6.25 * height) - (5 * age) - 161
 
-with col_b:
-    st.metric(label="미세먼지 (PM10)", value="21 µg/m³", delta="좋음", delta_color="normal")
+    # 일일 총 에너지 소비량(TDEE) 계산
+    tdee = bmr * activity_factors[activity_level]
 
-with col_c:
-    st.metric(label="오존 (O₃)", value="0.037 ppm", delta="보통", delta_color="off")
+    # 권장 영양소 비율 계산 (탄수화물 50%, 단백질 30%, 지방 20% 기준)
+    carbs_g = (tdee * 0.5) / 4   # 탄수화물 1g당 4kcal
+    protein_g = (tdee * 0.3) / 4 # 단백질 1g당 4kcal
+    fat_g = (tdee * 0.2) / 9     # 지방 1g당 9kcal
+
+    st.divider()
+    st.subheader("📊 계산 결과")
+
+    m1, m2 = st.columns(2)
+    with m1:
+        st.metric(label="기초대사량 (BMR)", value=f"{bmr:.1f} kcal")
+    with m2:
+        st.metric(label="일일 총 에너지 소비량 (TDEE)", value=f"{tdee:.1f} kcal")
+
+    st.write("")
+    st.markdown("#### 🥗 권장 영양소 섭취량")
+    st.write(f"- **탄수화물**: 약 **{carbs_g:.1f}g** (주요 에너지원)")
+    st.write(f"- **단백질**: 약 **{protein_g:.1f}g** (신체 조직 구성 및 효소)")
+    st.write(f"- **지방**: 약 **{fat_g:.1f}g** (에너지 저장 및 세포막 구성)")
+
+    st.divider()
+    
+    # 4. 교과 연계 탐구 포인트 (세특 작성에 도움될 과학적 설명)
+    st.subheader("🔬 교과 연계: 우리 몸속 화학 반응")
+    st.info(
+        "**1. 세포 호흡 (에너지 생성 반응)**\n"
+        "우리가 섭취한 탄수화물(포도당)은 소화되어 세포로 전달되고, 미토콘드리아에서 산소와 반응하여 "
+        "이산화탄소와 물로 분해됩니다. 이 과정에서 발생하는 화학 에너지가 생명활동에 쓰이는 ATP를 합성합니다.\n\n"
+        "**2. 단백질의 소화와 합성**\n"
+        "섭취한 단백질은 아미노산으로 분해(가수분해)된 후, 체내로 흡수되어 유전 정보에 따라 근육, 호르몬, "
+        "화학 반응을 돕는 생체 촉매(효소)로 재조합됩니다."
+    )
