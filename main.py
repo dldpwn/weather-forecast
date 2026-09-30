@@ -79,10 +79,7 @@ tdee = bmr * activity_factors[activity_level]
 st.session_state["calculated_tdee"] = tdee
 
 st.divider()
-st.markdown('
-📊 신체 측정 및 대사량 결과
-
-', unsafe_allow_html=True)
+st.markdown('📊 신체 측정 및 대사량 결과', unsafe_allow_html=True)
 
 # 결과 지표 표시
 m1, m2, m3 = st.columns(3)
