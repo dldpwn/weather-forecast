@@ -8,10 +8,8 @@ st.set_page_config(
     initial_sidebar_state="collapsed" 
 )
 
-# 2. 디자인, 둥근 폰트(Sunflower), 그리고 왼쪽 정렬 스타일 적용
-st.markdown("""
-    
-""", unsafe_allow_html=True)
+# 2. 안전한 한 줄 CSS 스타일 적용 (따옴표 에러 원천 차단)
+st.markdown('', unsafe_allow_html=True)
 
 # --- 사이드바 영역 ---
 with st.sidebar:
@@ -21,7 +19,7 @@ with st.sidebar:
     st.page_link("pages/calculate.py", label="🥗 맞춤형 식단 플래너", icon="🥗")
 
 # --- 메인 화면 ---
-st.title("🧪 내 몸에 맞는 영양소 & 화학 반응 계산기")
+st.title("🍎 내 몸의 에너지 균형: 기초대사량 & 영양 가이드")
 st.write("나의 신체 정보를 입력하고, 비만도(BMI), 하루 대사량, 그리고 몸속 화학 반응을 확인해보세요!")
 st.divider()
 
