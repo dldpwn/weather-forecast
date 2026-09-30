@@ -20,7 +20,7 @@ with st.sidebar:
     st.page_link("pages/calculate.py", label="🥗 맞춤형 식단 플래너", icon="🥗")
 
 # --- 메인 화면 ---
-st.title("🧪 내 몸에 맞는 영양소 & 화학 반응 계산기")
+st.title("🍎 내 몸의 에너지 균형: 기초대사량 & 영양 가이드")
 st.write("나의 신체 정보를 입력하고, 비만도(BMI), 하루 대사량, 그리고 몸속 화학 반응을 확인해보세요!")
 st.divider()
 
