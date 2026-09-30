@@ -8,7 +8,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed" 
 )
 
-# 2. 스트림릿 컴포넌트 전용 CSS 강제 적용 스타일
+# 2. 디자인, 둥근 폰트(Sunflower), 그리고 왼쪽 정렬 스타일 적용
 st.markdown("""
     
 """, unsafe_allow_html=True)
