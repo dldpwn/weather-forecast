@@ -21,12 +21,15 @@ with st.sidebar:
     st.page_link("pages/calculate.py", label="🥗 맞춤형 식단 플래너", icon="🥗")
 
 # --- 메인 화면 ---
-st.title("🍎 내 몸의 에너지 균형: 기초대사량 & 영양 가이드")
+st.title("🧪 내 몸에 맞는 영양소 & 화학 반응 계산기")
 st.write("나의 신체 정보를 입력하고, 비만도(BMI), 하루 대사량, 그리고 몸속 화학 반응을 확인해보세요!")
 st.divider()
 
 # 신체 정보 입력 섹션 헤더
-st.markdown('', unsafe_allow_html=True)
+st.markdown('
+신체 정보 입력
+
+', unsafe_allow_html=True)
 
 col1, col2 = st.columns(2)
 
@@ -93,7 +96,7 @@ with m1:
 with m2:
     st.metric(label="기초대사량 (BMR)", value=f"{bmr:.1f} kcal")
 with m3:
-    st.metric(label="일일 총 에너지 소비량 (TDEE)", value=f"{tdee:.1f} kcal")
+    st.metric(label="일일 총 소비량 (TDEE)", value=f"{tdee:.1f} kcal")
 
 st.write("")
 st.markdown("#### 🥗 권장 영양소 섭취량")
