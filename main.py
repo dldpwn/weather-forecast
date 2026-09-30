@@ -16,7 +16,6 @@ st.markdown("""
 # --- 사이드바 영역 ---
 with st.sidebar:
     st.markdown("### 🧭 메뉴 이동")
-    st.info("💡 왼쪽 위의 **`>` (화살표)**를 누르면 사이드바를 다시 숨길 수 있어요!")
     st.page_link("main.py", label="🧪 영양소 & 화학 계산기", icon="🧮")
     st.page_link("pages/calculate.py", label="🥗 맞춤형 식단 플래너", icon="🥗")
 
