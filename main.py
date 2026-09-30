@@ -24,10 +24,7 @@ st.write("나의 신체 정보를 입력하고, 비만도(BMI), 하루 대사량
 st.divider()
 
 # 신체 정보 입력 섹션 헤더
-st.markdown('
-신체 정보 입력
-
-', unsafe_allow_html=True)
+st.markdown('신체 정보 입력', unsafe_allow_html=True)
 
 col1, col2 = st.columns(2)
 
