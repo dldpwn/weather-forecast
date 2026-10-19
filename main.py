@@ -14,9 +14,8 @@ st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap');
 
-html, body, [class*="st-"],
-button, input, textarea, select,
-[data-testid="stMetricValue"],
+html, body, p, label, h1, h2, h3, h4, h5, h6,
+.stMarkdown, [data-testid="stMetricValue"],
 [data-testid="stMetricLabel"] {
     font-family: 'Gowun Dodum', sans-serif !important;
 }
