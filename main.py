@@ -22,13 +22,13 @@ st.markdown("""
     --muted: #75877C;
 }
 
-html, body, [class*="st-"],
-p, label, input, textarea,
+html, body, p, label,
+h1, h2, h3, h4, h5, h6,
+.stMarkdown,
 [data-testid="stMetricValue"],
 [data-testid="stMetricLabel"] {
     font-family: 'Gowun Dodum', sans-serif !important;
 }
-
 .stApp {
     background: var(--cream);
 }
