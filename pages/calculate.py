@@ -136,32 +136,46 @@ if "meal_plan_calories" in st.session_state:
         "영양소": ["탄수화물", "단백질", "지방"],
         "에너지 비율": [50, 30, 20]
     })
+import plotly.express as px
 
-    fig = go.Figure(data=[
-        go.Pie(
-            labels=chart_data["영양소"],
-            values=chart_data["에너지 비율"],
-            hole=0.55,
-            textinfo="label+percent",
-            textposition="outside",
-            marker=dict(
-                colors=["#75A88C", "#B7DCC8", "#E9CFA6"],
-                line=dict(color="#FAF9F3", width=3)
-            ),
-            hovertemplate="%{label}: %{percent}<extra></extra>"
-        )
-    ])
+chart_data = pd.DataFrame({
+    "영양소": ["탄수화물", "단백질", "지방"],
+    "에너지 비율": [50, 30, 20]
+})
 
-    fig.update_layout(
-        height=380,
-        showlegend=False,
-        margin=dict(t=35, b=35, l=35, r=35),
-        paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="rgba(0,0,0,0)",
-        font=dict(family="Gowun Dodum, sans-serif", color="#294B3D")
+fig = px.pie(
+    chart_data,
+    names="영양소",
+    values="에너지 비율",
+    hole=0.55,
+    color="영양소",
+    color_discrete_map={
+        "탄수화물": "#75A88C",
+        "단백질": "#B7DCC8",
+        "지방": "#E9CFA6"
+    }
+)
+
+fig.update_traces(
+    textinfo="label+percent",
+    textposition="outside",
+    hovertemplate="%{label}: %{percent}<extra></extra>"
+)
+
+fig.update_layout(
+    height=380,
+    showlegend=False,
+    margin=dict(t=40, b=40, l=40, r=40),
+    paper_bgcolor="rgba(0,0,0,0)",
+    plot_bgcolor="rgba(0,0,0,0)",
+    font=dict(
+        family="Gowun Dodum, sans-serif",
+        color="#294B3D"
     )
+)
 
-    st.plotly_chart(fig, use_container_width=True)
+st.plotly_chart(fig, use_container_width=True)
+
 
     st.caption(
         "영양소 비율은 탄수화물 50%, 단백질 30%, 지방 20%로 설정한 "
