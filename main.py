@@ -9,6 +9,18 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
+# ==================================================
+# Streamlit 기본 페이지 메뉴 숨기기
+# ==================================================
+
+st.markdown("""
+<style>
+    [data-testid="stSidebarNav"] {
+        display: none;
+    }
+</style>
+""", unsafe_allow_html=True)
+
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap');
