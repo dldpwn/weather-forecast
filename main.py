@@ -1,4 +1,4 @@
-
+```python
 import streamlit as st
 
 # =========================================================
@@ -104,10 +104,7 @@ with st.sidebar:
 # 기초대사량 추정 함수
 # =========================================================
 def estimate_bmr(age, sex, height_cm, weight_kg):
-    """
-    연령대에 따라 기초대사량 추정식을 선택한다.
-    계산 결과는 직접 측정한 값이 아닌 추정값이다.
-    """
+    """연령대별 기초대사량 추정식."""
 
     if age < 3:
         return None, None
@@ -179,16 +176,6 @@ def estimate_activity_level(
     exercise_intensity,
     daily_movement,
 ):
-    """
-    걷기 시간, 운동 빈도, 운동 강도, 일상 활동을 점수화한다.
-
-    이 점수표는 교육용 간이 분류 규칙이며,
-    검증된 임상 평가 도구는 아니다.
-
-    운동 열량을 별도로 더하지 않고,
-    점수로 추정한 활동 수준을 EER 계산식에 전달한다.
-    """
-
     walking_points = {
         "30분 미만": 0,
         "30~60분": 1,
@@ -215,7 +202,6 @@ def estimate_activity_level(
         "하루 중 걷거나 서 있는 시간이 많은 편": 2,
     }.get(daily_movement, 1)
 
-    # 운동을 하지 않는다고 선택하면 운동 횟수는 점수에 포함하지 않는다.
     if exercise_intensity == "운동하지 않음":
         frequency_points = 0
 
@@ -226,7 +212,6 @@ def estimate_activity_level(
         + movement_points
     )
 
-    # 총점에 따라 활동 수준을 네 단계로 분류한다.
     if total_score <= 2:
         activity_level = "비활동적 (Inactive)"
     elif total_score <= 4:
@@ -258,13 +243,7 @@ PAL_ENGLISH = {
 
 
 def estimate_eer(age, sex, height_cm, weight_kg, pal_category):
-    """
-    NASEM/Health Canada 2023 EER 추정식 구조를 이용한다.
-
-    3~18세는 성장 에너지 항을 포함한다.
-    19세 이상은 성인 공식을 사용한다.
-    3세 미만은 현재 화면에서 계산하지 않는다.
-    """
+    """연령과 추정 활동 수준을 이용한 에너지 필요량 추정."""
 
     if age < 3:
         return None, None
@@ -303,12 +282,7 @@ def estimate_eer(age, sex, height_cm, weight_kg, pal_category):
                 "very_active": (-709.59, -22.25, 18.22, 14.25),
             }
 
-        (
-            constant,
-            age_coef,
-            height_coef,
-            weight_coef,
-        ) = coefficients[pal]
+        constant, age_coef, height_coef, weight_coef = coefficients[pal]
 
         eer = (
             constant
@@ -336,7 +310,6 @@ def estimate_eer(age, sex, height_cm, weight_kg, pal_category):
                 "active": 1.25,
                 "very_active": 1.48,
             }
-
         else:
             constant = 584.90
             age_coef = -7.01
@@ -444,12 +417,7 @@ with st.form("bmr_form"):
     activity_col1, activity_col2, activity_col3 = st.columns(3)
 
     with activity_col1:
-        walking_options = [
-            "30분 미만",
-            "30~60분",
-            "60분 초과",
-        ]
-
+        walking_options = ["30분 미만", "30~60분", "60분 초과"]
         walking_default = st.session_state.get(
             "input_walking_time", "30~60분"
         )
@@ -465,13 +433,7 @@ with st.form("bmr_form"):
         )
 
     with activity_col2:
-        frequency_options = [
-            "0~1회",
-            "2회",
-            "3~4회",
-            "5회 이상",
-        ]
-
+        frequency_options = ["0~1회", "2회", "3~4회", "5회 이상"]
         frequency_default = st.session_state.get(
             "input_exercise_frequency", "3~4회"
         )
@@ -493,7 +455,6 @@ with st.form("bmr_form"):
             "높은 강도",
             "운동하지 않음",
         ]
-
         intensity_default = st.session_state.get(
             "input_exercise_intensity", "중간 강도"
         )
@@ -513,7 +474,6 @@ with st.form("bmr_form"):
         "앉아 있는 시간과 걷기·이동이 섞여 있음",
         "하루 중 걷거나 서 있는 시간이 많은 편",
     ]
-
     movement_default = st.session_state.get(
         "input_daily_movement",
         "앉아 있는 시간과 걷기·이동이 섞여 있음",
@@ -553,7 +513,6 @@ if submitted:
     st.session_state["input_exercise_intensity"] = exercise_intensity
     st.session_state["input_daily_movement"] = daily_movement
 
-    # 네 가지 활동 기록을 실제 계산에 반영한다.
     pal_category, activity_score, activity_score_details = (
         estimate_activity_level(
             walking_time,
@@ -585,15 +544,11 @@ if submitted:
     st.session_state["bmr_result"] = bmr
     st.session_state["formula_name"] = bmr_formula_name
     st.session_state["eer_formula_name"] = eer_formula_name
-    st.session_state["calculation_age_group"] = age_group_label(
-        int(age)
-    )
+    st.session_state["calculation_age_group"] = age_group_label(int(age))
 
     if bmr is not None and eer is not None:
         bmi = float(weight_kg) / ((float(height_cm) / 100) ** 2)
 
-        # 기존 pages/calculate.py와 호환되도록
-        # 기존 세션 키에 EER 값을 저장한다.
         st.session_state["calculated_bmi"] = round(bmi, 1)
         st.session_state["calculated_bmr"] = round(bmr)
         st.session_state["calculated_eer"] = round(eer)
@@ -609,12 +564,8 @@ if submitted:
         st.session_state["calculated_activity"] = pal_category
 
         st.session_state["calculated_walking_time"] = walking_time
-        st.session_state["calculated_exercise_frequency"] = (
-            exercise_frequency
-        )
-        st.session_state["calculated_exercise_intensity"] = (
-            exercise_intensity
-        )
+        st.session_state["calculated_exercise_frequency"] = exercise_frequency
+        st.session_state["calculated_exercise_intensity"] = exercise_intensity
         st.session_state["calculated_daily_movement"] = daily_movement
 
     else:
@@ -633,18 +584,13 @@ if submitted:
 # =========================================================
 # 결과 표시
 # =========================================================
-bmr_result = st.session_state.get(
-    "bmr_result",
-    "not_calculated",
-)
+bmr_result = st.session_state.get("bmr_result", "not_calculated")
 
 if bmr_result is not None and bmr_result != "not_calculated":
     bmr_value = float(bmr_result)
     eer_value = float(st.session_state.get("calculated_eer", 0))
 
-    age_now = int(
-        st.session_state.get("calculated_age", 25)
-    )
+    age_now = int(st.session_state.get("calculated_age", 25))
 
     current_pal = st.session_state.get(
         "calculated_activity",
@@ -656,16 +602,8 @@ if bmr_result is not None and bmr_result != "not_calculated":
 
     metric1, metric2, metric3 = st.columns(3)
 
-    metric1.metric(
-        "추정 기초대사량",
-        f"{bmr_value:,.0f} kcal/일",
-    )
-
-    metric2.metric(
-        "예상 하루 에너지 필요량",
-        f"{eer_value:,.0f} kcal/일",
-    )
-
+    metric1.metric("추정 기초대사량", f"{bmr_value:,.0f} kcal/일")
+    metric2.metric("예상 하루 에너지 필요량", f"{eer_value:,.0f} kcal/일")
     metric3.metric(
         "적용 연령대",
         st.session_state.get("calculation_age_group", "-"),
@@ -686,14 +624,12 @@ if bmr_result is not None and bmr_result != "not_calculated":
             "별도 영유아 계산 화면을 제공하지 않아 "
             "이 연령대의 하루 에너지 필요량을 계산하지 않아요."
         )
-
     elif age_now < 19:
         st.warning(
             "어린이·청소년용 EER 공식에는 성장에 필요한 "
             "에너지 항이 포함되어 있어요. 이 결과는 추정값이며, "
             "이를 근거로 섭취량을 엄격하게 제한하지 마세요."
         )
-
     else:
         st.caption(
             "EER은 연령·성별·키·체중과 추정 활동 수준을 "
@@ -708,28 +644,23 @@ if bmr_result is not None and bmr_result != "not_calculated":
 
     st.write(
         f"- 하루 걷기·이동 시간: "
-        f"**{st.session_state.get('calculated_walking_time', '-') }**"
+        f"**{st.session_state.get('calculated_walking_time', '-')}**"
     )
-
     st.write(
         f"- 주당 운동 횟수: "
-        f"**{st.session_state.get('calculated_exercise_frequency', '-') }**"
+        f"**{st.session_state.get('calculated_exercise_frequency', '-')}**"
     )
-
     st.write(
         f"- 주된 운동 강도: "
-        f"**{st.session_state.get('calculated_exercise_intensity', '-') }**"
+        f"**{st.session_state.get('calculated_exercise_intensity', '-')}**"
     )
-
     st.write(
         f"- 운동 외 일상 활동: "
-        f"**{st.session_state.get('calculated_daily_movement', '-') }**"
+        f"**{st.session_state.get('calculated_daily_movement', '-')}**"
     )
 
     activity_score = st.session_state.get("activity_score", 0)
-    score_details = st.session_state.get(
-        "activity_score_details", {}
-    )
+    score_details = st.session_state.get("activity_score_details", {})
 
     st.markdown(
         f"**활동량 점수: {activity_score}점**"
@@ -754,7 +685,7 @@ if bmr_result is not None and bmr_result != "not_calculated":
     )
 
     # -----------------------------------------------------
-    # 식단 페이지 연결 안내
+    # 식단 페이지 연결 안내 및 이동 버튼
     # -----------------------------------------------------
     st.markdown("#### 🥗 계산 결과 활용")
 
@@ -764,6 +695,13 @@ if bmr_result is not None and bmr_result != "not_calculated":
         "기존 한 달 맞춤 식단 페이지로 전달해요. "
         "식단은 참고 추정값뿐 아니라 식품 다양성과 "
         "영양 균형을 함께 고려해 주세요."
+    )
+
+    st.button(
+        "🥗 식단 플래너로 이동하기 →",
+        key="go_to_meal_planner",
+        use_container_width=True,
+        on_click=lambda: st.switch_page("pages/calculate.py"),
     )
 
 elif bmr_result is None:
@@ -796,3 +734,4 @@ with st.expander("공식과 계산 결과에 대한 안내"):
 st.caption(
     "NutriDay는 교육용 참고 도구이며 의료 진단이나 개인별 영양 처방을 대신하지 않아요."
 )
+```
