@@ -32,6 +32,11 @@ st.markdown(
         background: #EEF6EF;
     }
 
+    /* Streamlit 기본 페이지 목록(main, calculate) 숨기기 */
+    [data-testid="stSidebarNav"] {
+        display: none;
+    }
+
     .main-title {
         color: #377D61;
         font-size: 2rem;
@@ -460,7 +465,6 @@ with st.expander("공식과 계산 결과에 대한 안내"):
           정확하게 계산할 수 없어요.
         """
     )
-
 
 st.caption(
     "NutriDay는 교육용 참고 도구이며 의료 진단이나 "
