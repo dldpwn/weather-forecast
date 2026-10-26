@@ -461,17 +461,6 @@ with st.expander("공식과 계산 결과에 대한 안내"):
         """
     )
 
-    st.markdown(
-        """
-        **참고 자료**
-        
-        - Mifflin et al., *A new predictive equation for resting
-          energy expenditure in healthy individuals*,
-          The American Journal of Clinical Nutrition, 1990.
-        - Health Canada, *Dietary Reference Intakes Tables:
-          Equations to Estimate Energy Requirement*.
-        """
-    )
 
 st.caption(
     "NutriDay는 교육용 참고 도구이며 의료 진단이나 "
