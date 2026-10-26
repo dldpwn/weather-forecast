@@ -23,60 +23,104 @@ st.markdown(
         font-family: 'Gowun Dodum', sans-serif;
     }
 
+    /* 전체 배경 및 기본 글자 */
     .stApp {
-        background: #FBF9F1;
-        color: #263B32;
+        background: #FAF9F3;
+        color: #294B3D;
     }
 
+    /* 사이드바 */
     [data-testid="stSidebar"] {
-        background: #EEF6EF;
+        background: #FAF9F3;
     }
 
-    /* Streamlit 기본 페이지 목록(main, calculate) 숨기기 */
+    /* Streamlit 기본 페이지 목록 숨기기 */
     [data-testid="stSidebarNav"] {
         display: none;
     }
 
+    /* 제목 */
     .main-title {
-        color: #377D61;
+        color: #294B3D;
         font-size: 2rem;
         font-weight: 800;
         margin-bottom: .25rem;
     }
 
+    /* 설명 문구 */
     .sub-text {
-        color: #69756E;
+        color: #75877C;
         margin-bottom: 1.2rem;
     }
 
+    /* 안내 카드 */
     .info-card {
-        background: #F0F7F0;
-        border: 1px solid #DCEADF;
-        border-radius: 16px;
+        background: #FFFFFF;
+        border: 1px solid #E7EDE6;
+        border-radius: 18px;
         padding: 1rem 1.1rem;
         margin-bottom: .7rem;
+        color: #294B3D;
     }
 
+    /* 계산 결과 카드 */
     div[data-testid="stMetric"] {
-        background: #F0F7F0;
-        border: 1px solid #DCEADF;
-        border-radius: 14px;
+        background: #FFFFFF;
+        border: 1px solid #E7EDE6;
+        border-radius: 18px;
         padding: 1rem;
     }
 
-    div.stButton > button {
-        background: #4D9274;
+    /* 카드 안의 숫자와 설명 */
+    div[data-testid="stMetric"] label {
+        color: #75877C;
+    }
+
+    div[data-testid="stMetric"] [data-testid="stMetricValue"] {
+        color: #294B3D;
+    }
+
+    /* 버튼 */
+    div.stButton > button,
+    div.stFormSubmitButton > button {
+        background: #4F8069;
         color: white;
-        border: 0;
+        border: 1px solid #4F8069;
         border-radius: 12px;
         padding: .65rem 1rem;
         font-weight: 700;
     }
 
-    div.stButton > button:hover {
-        background: #377D61;
+    /* 버튼에 마우스를 올렸을 때 */
+    div.stButton > button:hover,
+    div.stFormSubmitButton > button:hover {
+        background: #294B3D;
         color: white;
-        border: 0;
+        border-color: #294B3D;
+    }
+
+    /* 입력창 */
+    div[data-baseweb="input"] > div,
+    div[data-baseweb="select"] > div {
+        border-radius: 10px;
+        border-color: #E3E9DF;
+    }
+
+    /* 구분선 */
+    hr {
+        border-color: #E5EAE1;
+    }
+
+    /* 진행 및 강조 요소 */
+    [data-testid="stProgressBar"] > div > div {
+        background-color: #4F8069;
+    }
+
+    /* 펼치기 영역 */
+    [data-testid="stExpander"] {
+        background: #FFFFFF;
+        border: 1px solid #E7EDE6;
+        border-radius: 14px;
     }
     </style>
     """,
@@ -87,17 +131,20 @@ st.markdown(
 # 사이드바
 # =========================================================
 with st.sidebar:
-    st.markdown("## 🥗 NutriDay")
+    st.markdown(
+        "<h3 style='color:#294B3D;'>🥗 NutriDay</h3>",
+        unsafe_allow_html=True,
+    )
     st.caption("나에게 맞는 하루 영양 관리")
 
     st.page_link(
         "main.py",
-        label="🧪 기초대사량 & 영양 가이드"
+        label="🧪 기초대사량 & 영양 가이드",
     )
 
     st.page_link(
         "pages/calculate.py",
-        label="🥗 한 달 맞춤 식단"
+        label="🥗 한 달 맞춤 식단",
     )
 
 # =========================================================
@@ -106,12 +153,6 @@ with st.sidebar:
 def estimate_bmr(age, sex, height_cm, weight_kg):
     """
     연령대에 따라 기초대사량 추정식을 선택한다.
-
-    3~9세: Schofield 체중 기반 추정식
-    10~17세: Schofield 체중 기반 추정식
-    18~64세: Mifflin-St Jeor 공식
-    65세 이상: Schofield 고령자용 체중 기반 추정식
-
     계산 결과는 실제 측정값이 아닌 추정값이다.
     """
 
@@ -305,12 +346,10 @@ if submitted:
     )
 
     if bmr is not None:
-        # BMI는 참고용으로만 계산
         bmi = float(weight_kg) / (
             (float(height_cm) / 100) ** 2
         )
 
-        # 기존 식단 페이지와 호환되는 세션 상태
         tdee = bmr * ACTIVITY_FACTORS[activity]
 
         st.session_state["calculated_bmi"] = round(bmi, 1)
@@ -327,7 +366,6 @@ if submitted:
         st.session_state["calculated_activity"] = activity
 
     else:
-        # 영유아는 일반 계산식을 적용하지 않음
         for key in [
             "calculated_bmr",
             "calculated_tdee",
