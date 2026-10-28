@@ -21,10 +21,11 @@ st.set_page_config(
 
 st.markdown("""
 <style>
-    /* 기본 페이지 메뉴 숨기기 */
-    [data-testid="stSidebarNav"] {
-        display: none !important;
-    }
+[data-testid="stSidebarNav"] {
+    display: none !important;
+}
+</style>
+""", unsafe_allow_html=True)
 
     html, body, p, label,
     h1, h2, h3, h4, h5, h6,
