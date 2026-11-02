@@ -307,159 +307,348 @@ with col2:
 # 음식 데이터
 # ==================================================
 
-# 모든 영양 성분 수치는 1회 분량 기준의 예시값이다.
-# 실제 제품 및 조리법에 따른 영양 성분과 다를 수 있다.
-
 foods = {
+
     "닭고기 덮밥": {
-        "group": "닭고기", "style": "한식",
-        "kcal": 450, "carbs": 65, "protein": 28, "fat": 9,
-        "fiber": 4, "calcium": 45, "iron": 2.0,
-        "potassium": 430, "sodium": 450,
-        "vitamin_a": 35, "vitamin_c": 12, "vitamin_d": 0.2
+        "group": "닭고기",
+        "style": "한식",
+        "kcal": 450,
+        "carbs": 65,
+        "protein": 28,
+        "fat": 9,
+        "fiber": 4,
+        "calcium": 45,
+        "iron": 2.0,
+        "potassium": 430,
+        "sodium": 450,
+        "vitamin_a": 35,
+        "vitamin_c": 12,
+        "vitamin_d": 0.2
     },
+
     "두부 비빔밥": {
-        "group": "두부", "style": "한식",
-        "kcal": 430, "carbs": 68, "protein": 18, "fat": 10,
-        "fiber": 7, "calcium": 160, "iron": 3.0,
-        "potassium": 620, "sodium": 500,
-        "vitamin_a": 180, "vitamin_c": 18, "vitamin_d": 0
+        "group": "두부",
+        "style": "한식",
+        "kcal": 430,
+        "carbs": 68,
+        "protein": 18,
+        "fat": 10,
+        "fiber": 7,
+        "calcium": 160,
+        "iron": 3.0,
+        "potassium": 620,
+        "sodium": 500,
+        "vitamin_a": 180,
+        "vitamin_c": 18,
+        "vitamin_d": 0
     },
+
     "생선구이 정식": {
-        "group": "생선", "style": "한식",
-        "kcal": 470, "carbs": 65, "protein": 27, "fat": 12,
-        "fiber": 5, "calcium": 55, "iron": 2.0,
-        "potassium": 520, "sodium": 480,
-        "vitamin_a": 30, "vitamin_c": 15, "vitamin_d": 5
+        "group": "생선",
+        "style": "한식",
+        "kcal": 470,
+        "carbs": 65,
+        "protein": 27,
+        "fat": 12,
+        "fiber": 5,
+        "calcium": 55,
+        "iron": 2.0,
+        "potassium": 520,
+        "sodium": 480,
+        "vitamin_a": 30,
+        "vitamin_c": 15,
+        "vitamin_d": 5
     },
+
     "소고기 채소볶음 정식": {
-        "group": "소고기", "style": "한식",
-        "kcal": 490, "carbs": 62, "protein": 29, "fat": 13,
-        "fiber": 5, "calcium": 60, "iron": 3.5,
-        "potassium": 480, "sodium": 520,
-        "vitamin_a": 100, "vitamin_c": 20, "vitamin_d": 0.2
+        "group": "소고기",
+        "style": "한식",
+        "kcal": 490,
+        "carbs": 62,
+        "protein": 29,
+        "fat": 13,
+        "fiber": 5,
+        "calcium": 60,
+        "iron": 3.5,
+        "potassium": 480,
+        "sodium": 520,
+        "vitamin_a": 100,
+        "vitamin_c": 20,
+        "vitamin_d": 0.2
     },
+
     "돼지고기 채소볶음": {
-        "group": "돼지고기", "style": "한식",
-        "kcal": 480, "carbs": 60, "protein": 25, "fat": 15,
-        "fiber": 5, "calcium": 50, "iron": 2.5,
-        "potassium": 450, "sodium": 550,
-        "vitamin_a": 90, "vitamin_c": 18, "vitamin_d": 0.5
+        "group": "돼지고기",
+        "style": "한식",
+        "kcal": 480,
+        "carbs": 60,
+        "protein": 25,
+        "fat": 15,
+        "fiber": 5,
+        "calcium": 50,
+        "iron": 2.5,
+        "potassium": 450,
+        "sodium": 550,
+        "vitamin_a": 90,
+        "vitamin_c": 18,
+        "vitamin_d": 0.5
     },
+
     "달걀 채소볶음밥": {
-        "group": "달걀", "style": "한식",
-        "kcal": 420, "carbs": 62, "protein": 15, "fat": 12,
-        "fiber": 4, "calcium": 65, "iron": 2.0,
-        "potassium": 350, "sodium": 430,
-        "vitamin_a": 140, "vitamin_c": 15, "vitamin_d": 1.2
+        "group": "달걀",
+        "style": "한식",
+        "kcal": 420,
+        "carbs": 62,
+        "protein": 15,
+        "fat": 12,
+        "fiber": 4,
+        "calcium": 65,
+        "iron": 2.0,
+        "potassium": 350,
+        "sodium": 430,
+        "vitamin_a": 140,
+        "vitamin_c": 15,
+        "vitamin_d": 1.2
     },
+
     "닭고기 샐러드": {
-        "group": "닭고기", "style": "간편식",
-        "kcal": 350, "carbs": 25, "protein": 30, "fat": 13,
-        "fiber": 6, "calcium": 90, "iron": 2.5,
-        "potassium": 600, "sodium": 400,
-        "vitamin_a": 250, "vitamin_c": 35, "vitamin_d": 0.2
+        "group": "닭고기",
+        "style": "간편식",
+        "kcal": 350,
+        "carbs": 25,
+        "protein": 30,
+        "fat": 13,
+        "fiber": 6,
+        "calcium": 90,
+        "iron": 2.5,
+        "potassium": 600,
+        "sodium": 400,
+        "vitamin_a": 250,
+        "vitamin_c": 35,
+        "vitamin_d": 0.2
     },
+
     "두부 샐러드": {
-        "group": "두부", "style": "간편식",
-        "kcal": 320, "carbs": 28, "protein": 17, "fat": 14,
-        "fiber": 7, "calcium": 180, "iron": 3.0,
-        "potassium": 520, "sodium": 350,
-        "vitamin_a": 220, "vitamin_c": 30, "vitamin_d": 0
+        "group": "두부",
+        "style": "간편식",
+        "kcal": 320,
+        "carbs": 28,
+        "protein": 17,
+        "fat": 14,
+        "fiber": 7,
+        "calcium": 180,
+        "iron": 3.0,
+        "potassium": 520,
+        "sodium": 350,
+        "vitamin_a": 220,
+        "vitamin_c": 30,
+        "vitamin_d": 0
     },
+
     "통밀빵과 달걀": {
-        "group": "달걀", "style": "간편식",
-        "kcal": 330, "carbs": 40, "protein": 17, "fat": 11,
-        "fiber": 5, "calcium": 100, "iron": 2.5,
-        "potassium": 280, "sodium": 420,
-        "vitamin_a": 110, "vitamin_c": 0, "vitamin_d": 1.0
+        "group": "달걀",
+        "style": "간편식",
+        "kcal": 330,
+        "carbs": 40,
+        "protein": 17,
+        "fat": 11,
+        "fiber": 5,
+        "calcium": 100,
+        "iron": 2.5,
+        "potassium": 280,
+        "sodium": 420,
+        "vitamin_a": 110,
+        "vitamin_c": 0,
+        "vitamin_d": 1.0
     },
+
     "오트밀과 우유": {
-        "group": "우유", "style": "간편식",
-        "kcal": 350, "carbs": 52, "protein": 14, "fat": 9,
-        "fiber": 7, "calcium": 300, "iron": 2.5,
-        "potassium": 480, "sodium": 150,
-        "vitamin_a": 70, "vitamin_c": 2, "vitamin_d": 2.5
+        "group": "우유",
+        "style": "간편식",
+        "kcal": 350,
+        "carbs": 52,
+        "protein": 14,
+        "fat": 9,
+        "fiber": 7,
+        "calcium": 300,
+        "iron": 2.5,
+        "potassium": 480,
+        "sodium": 150,
+        "vitamin_a": 70,
+        "vitamin_c": 2,
+        "vitamin_d": 2.5
     },
+
     "과일과 요구르트": {
-        "group": "과일", "style": "간편식",
-        "kcal": 200, "carbs": 35, "protein": 7, "fat": 4,
-        "fiber": 4, "calcium": 220, "iron": 0.5,
-        "potassium": 350, "sodium": 90,
-        "vitamin_a": 30, "vitamin_c": 35, "vitamin_d": 0.5
+        "group": "과일",
+        "style": "간편식",
+        "kcal": 200,
+        "carbs": 35,
+        "protein": 7,
+        "fat": 4,
+        "fiber": 4,
+        "calcium": 220,
+        "iron": 0.5,
+        "potassium": 350,
+        "sodium": 90,
+        "vitamin_a": 30,
+        "vitamin_c": 35,
+        "vitamin_d": 0.5
     },
+
     "밥과 두부조림": {
-        "group": "두부", "style": "한식",
-        "kcal": 400, "carbs": 63, "protein": 18, "fat": 9,
-        "fiber": 4, "calcium": 170, "iron": 2.5,
-        "potassium": 400, "sodium": 400,
-        "vitamin_a": 50, "vitamin_c": 8, "vitamin_d": 0
+        "group": "두부",
+        "style": "한식",
+        "kcal": 400,
+        "carbs": 63,
+        "protein": 18,
+        "fat": 9,
+        "fiber": 4,
+        "calcium": 170,
+        "iron": 2.5,
+        "potassium": 400,
+        "sodium": 400,
+        "vitamin_a": 50,
+        "vitamin_c": 8,
+        "vitamin_d": 0
     },
-    "고구마와 삶은 달걀": {
-        "group": "달걀", "style": "간편식",
-        "kcal": 280, "carbs": 43, "protein": 13, "fat": 6,
-        "fiber": 6, "calcium": 55, "iron": 1.5,
-        "potassium": 520, "sodium": 180,
-        "vitamin_a": 20, "vitamin_c": 15, "vitamin_d": 1.0
+
+    "고구마와 달걀": {
+        "group": "달걀",
+        "style": "다양",
+        "kcal": 320,
+        "carbs": 48,
+        "protein": 13,
+        "fat": 8,
+        "fiber": 6,
+        "calcium": 60,
+        "iron": 1.5,
+        "potassium": 550,
+        "sodium": 180,
+        "vitamin_a": 600,
+        "vitamin_c": 15,
+        "vitamin_d": 1
     },
-    "과일 견과류": {
-        "group": "과일", "style": "간편식",
-        "kcal": 220, "carbs": 28, "protein": 5, "fat": 11,
-        "fiber": 5, "calcium": 45, "iron": 1.2,
-        "potassium": 300, "sodium": 20,
-        "vitamin_a": 10, "vitamin_c": 25, "vitamin_d": 0
+
+    "생선 샐러드": {
+        "group": "생선",
+        "style": "간편식",
+        "kcal": 360,
+        "carbs": 25,
+        "protein": 27,
+        "fat": 15,
+        "fiber": 6,
+        "calcium": 100,
+        "iron": 2.0,
+        "potassium": 500,
+        "sodium": 420,
+        "vitamin_a": 180,
+        "vitamin_c": 30,
+        "vitamin_d": 5
     },
-    "바나나와 우유": {
-        "group": "우유", "style": "간편식",
-        "kcal": 210, "carbs": 34, "protein": 8, "fat": 5,
-        "fiber": 3, "calcium": 240, "iron": 0.3,
-        "potassium": 500, "sodium": 100,
-        "vitamin_a": 60, "vitamin_c": 10, "vitamin_d": 2.0
+
+    "채소 비빔밥": {
+        "group": "채소",
+        "style": "한식",
+        "kcal": 400,
+        "carbs": 70,
+        "protein": 11,
+        "fat": 9,
+        "fiber": 8,
+        "calcium": 100,
+        "iron": 3.0,
+        "potassium": 650,
+        "sodium": 430,
+        "vitamin_a": 280,
+        "vitamin_c": 25,
+        "vitamin_d": 0
     },
-    "채소 주먹밥": {
-        "group": "채소", "style": "간편식",
-        "kcal": 300, "carbs": 52, "protein": 7, "fat": 7,
-        "fiber": 4, "calcium": 50, "iron": 1.5,
-        "potassium": 250, "sodium": 300,
-        "vitamin_a": 80, "vitamin_c": 15, "vitamin_d": 0
+
+    "과일 오트밀": {
+        "group": "과일",
+        "style": "간편식",
+        "kcal": 330,
+        "carbs": 55,
+        "protein": 11,
+        "fat": 8,
+        "fiber": 8,
+        "calcium": 180,
+        "iron": 2.5,
+        "potassium": 430,
+        "sodium": 120,
+        "vitamin_a": 30,
+        "vitamin_c": 25,
+        "vitamin_d": 1.5
     },
-    "참치 샌드위치": {
-        "group": "생선", "style": "간편식",
-        "kcal": 370, "carbs": 42, "protein": 22, "fat": 12,
-        "fiber": 5, "calcium": 100, "iron": 2.0,
-        "potassium": 330, "sodium": 520,
-        "vitamin_a": 35, "vitamin_c": 8, "vitamin_d": 1.5
+
+    "닭고기 채소볶음": {
+        "group": "닭고기",
+        "style": "다양",
+        "kcal": 430,
+        "carbs": 45,
+        "protein": 32,
+        "fat": 12,
+        "fiber": 6,
+        "calcium": 80,
+        "iron": 2.5,
+        "potassium": 520,
+        "sodium": 420,
+        "vitamin_a": 180,
+        "vitamin_c": 35,
+        "vitamin_d": 0.2
     },
-    "채소 달걀말이": {
-        "group": "달걀", "style": "한식",
-        "kcal": 180, "carbs": 5, "protein": 13, "fat": 12,
-        "fiber": 2, "calcium": 65, "iron": 1.5,
-        "potassium": 180, "sodium": 250,
-        "vitamin_a": 150, "vitamin_c": 10, "vitamin_d": 1.2
+
+    "소고기 덮밥": {
+        "group": "소고기",
+        "style": "다양",
+        "kcal": 470,
+        "carbs": 62,
+        "protein": 27,
+        "fat": 13,
+        "fiber": 4,
+        "calcium": 45,
+        "iron": 3.5,
+        "potassium": 430,
+        "sodium": 480,
+        "vitamin_a": 25,
+        "vitamin_c": 12,
+        "vitamin_d": 0.2
     },
-    "사과와 땅콩버터": {
-        "group": "과일", "style": "간편식",
-        "kcal": 190, "carbs": 25, "protein": 5, "fat": 9,
-        "fiber": 4, "calcium": 20, "iron": 0.5,
-        "potassium": 220, "sodium": 80,
-        "vitamin_a": 5, "vitamin_c": 5, "vitamin_d": 0
+
+    "돼지고기 덮밥": {
+        "group": "돼지고기",
+        "style": "다양",
+        "kcal": 460,
+        "carbs": 63,
+        "protein": 25,
+        "fat": 12,
+        "fiber": 4,
+        "calcium": 40,
+        "iron": 2.2,
+        "potassium": 420,
+        "sodium": 500,
+        "vitamin_a": 25,
+        "vitamin_c": 10,
+        "vitamin_d": 0.4
     },
-    "그릭요거트와 과일": {
-        "group": "우유", "style": "간편식",
-        "kcal": 230, "carbs": 30, "protein": 15, "fat": 5,
-        "fiber": 4, "calcium": 180, "iron": 0.3,
-        "potassium": 300, "sodium": 70,
-        "vitamin_a": 40, "vitamin_c": 20, "vitamin_d": 0.5
-    },
-    "채소와 후무스": {
-        "group": "채소", "style": "간편식",
-        "kcal": 170, "carbs": 20, "protein": 6, "fat": 8,
-        "fiber": 6, "calcium": 50, "iron": 1.5,
-        "potassium": 250, "sodium": 180,
-        "vitamin_a": 100, "vitamin_c": 20, "vitamin_d": 0
+
+    "두부 채소덮밥": {
+        "group": "두부",
+        "style": "다양",
+        "kcal": 420,
+        "carbs": 62,
+        "protein": 19,
+        "fat": 11,
+        "fiber": 7,
+        "calcium": 180,
+        "iron": 3.0,
+        "potassium": 560,
+        "sodium": 400,
+        "vitamin_a": 200,
+        "vitamin_c": 25,
+        "vitamin_d": 0
     }
 }
-
 # ==================================================
 # 음식 후보 생성
 # ==================================================
@@ -522,6 +711,13 @@ def generate_monthly_plan(
 
     if not candidates:
         return None
+
+    preferred_candidates = [
+        name for name in candidates
+        if matches_food(name, foods[name], preference)
+    ]
+
+    # 선호 메뉴를 더 자주 선택하되, 식단 다양성도 유지한다.
 
     plan = []
     recent_meals = []
@@ -610,8 +806,7 @@ if st.button(
             "goal": goal,
             "energy": daily_energy
         }
-
-        st.session_state.pop(
+                st.session_state.pop(
             "selected_day",
             None
         )
@@ -631,240 +826,362 @@ if "monthly_plan" in st.session_state:
     st.markdown("### 🗓️ 나의 30일 식단표")
 
     st.caption(
-        "각 날짜의 메뉴를 확인할 수 있어요. "
-        "식단을 다시 생성하면 새로운 메뉴 조합이 만들어져요."
+        "식단은 입력 조건에 맞춰 자동으로 구성한 예시예요. "
+        "실제 영양 성분을 검증한 전문 식단 처방은 아니에요."
     )
+
+    # ----------------------------------------------
+    # CSV 다운로드
+    # ----------------------------------------------
 
     plan_df = pd.DataFrame(plan)
 
-    # DataFrame 전용 렌더링 대신 HTML 표 사용
-    plan_html = plan_df.to_html(
-        index=False,
-        border=0,
-        classes="nutriday-table",
-        escape=True
+    csv_data = plan_df.to_csv(
+        index=False
+    ).encode("utf-8-sig")
+
+    st.download_button(
+        label="📥 한 달 식단표 CSV 다운로드",
+        data=csv_data,
+        file_name="NutriDay_30day_meal_plan.csv",
+        mime="text/csv",
+        use_container_width=True
     )
 
-    st.markdown(
-        f'<div class="nutriday-table-wrap">{plan_html}</div>',
-        unsafe_allow_html=True
-    )
-
-    st.divider()
-    st.markdown("### 🔍 날짜별 식단 확인")
+    # ----------------------------------------------
+    # 날짜 선택
+    # ----------------------------------------------
 
     selected_day = st.selectbox(
-        "확인할 날짜를 선택하세요.",
+        "자세히 확인할 날짜",
         options=list(range(1, 31)),
-        format_func=lambda x: f"{x}일차",
+        format_func=lambda x: f"{x}일 차",
         key="selected_day"
     )
 
-    selected_plan = next(
-        item for item in plan
-        if item["일차"] == selected_day
+    selected_meal = plan[selected_day - 1]
+
+    st.markdown(
+        f"#### 🍽️ {selected_day}일 차 식단"
     )
 
-meal_names = [
-    (meal_name, food_name)
-    for meal_name, food_name in selected_plan.items()
-    if meal_name != "일차"
-]
+    meal_columns = st.columns(
+        len(selected_meal) - 1
+    )
 
-meal_columns = st.columns(len(meal_names))
+    meal_names = [
+        key for key in selected_meal
+        if key != "일차"
+    ]
 
-for index, (meal_name, food_name) in enumerate(meal_names):
+    for idx, meal_name in enumerate(meal_names):
 
-    with meal_columns[index]:
+        with meal_columns[idx]:
 
-        st.markdown(
-            f"""
-            <div class="meal-card">
-                <h4>{meal_name}</h4>
-                <p>{food_name}</p>
-                <small>{foods[food_name]["kcal"]} kcal</small>
-            </div>
-            """,
-            unsafe_allow_html=True
+            st.markdown(
+                f'<div class="meal-card">'
+                f'<b>{meal_name}</b><br>'
+                f'{selected_meal[meal_name]}'
+                f'</div>',
+                unsafe_allow_html=True
+            )
+
+    # ----------------------------------------------
+    # 특정 날짜 식단 다시 추천
+    # ----------------------------------------------
+
+    if st.button(
+        f"🔄 {selected_day}일 차 식단 다시 추천",
+        use_container_width=True
+    ):
+
+        settings = st.session_state[
+            "monthly_plan_settings"
+        ]
+
+        candidates = get_food_candidates(
+            settings["style"],
+            settings["excluded"]
         )
 
-    st.divider()
+        preferred_candidates = [
+            name for name in candidates
+            if matches_food(name, foods[name], settings["preference"])
+        ]
+
+        meal_names = [
+            key for key in selected_meal
+            if key != "일차"
+        ]
+
+        if not candidates:
+            st.error(
+                "추천 가능한 음식이 없어요. "
+                "제외 조건을 조정해 주세요."
+            )
+
+        else:
+
+            for meal_name in meal_names:
+
+                available = [
+                    name for name in candidates
+                    if name != selected_meal[meal_name]
+                ]
+
+                if not available:
+                    available = candidates
+
+                preferred_available = [
+                    name for name in available
+                    if matches_food(name, foods[name], settings["preference"])
+                ]
+
+                if preferred_available and random.random() < 0.7:
+                    selected_meal[meal_name] = random.choice(preferred_available)
+                else:
+                    selected_meal[meal_name] = random.choice(available)
+
+            st.session_state["monthly_plan"][
+                selected_day - 1
+            ] = selected_meal
+
+            st.rerun()
+
+    # ----------------------------------------------
+    # 전체 30일 표
+    # ----------------------------------------------
+
+    st.markdown("#### 📋 전체 식단표")
+
+    plan_table_html = pd.DataFrame(plan).to_html(
+        index=False,
+        border=0,
+        classes="nutriday-table",
+        justify="center"
+    )
+    st.markdown(
+        f'<div class="nutriday-table-wrap">{plan_table_html}</div>',
+        unsafe_allow_html=True
+    )
 
     # ==============================================
     # 영양소 계산
     # ==============================================
 
-    st.markdown("### 📊 식단 영양소 분석")
+    def calculate_nutrients(meal):
+        total = {
+            "kcal": 0.0,
+            "carbs": 0.0,
+            "protein": 0.0,
+            "fat": 0.0,
+            "fiber": 0.0,
+            "calcium": 0.0,
+            "iron": 0.0,
+            "potassium": 0.0,
+            "sodium": 0.0,
+            "vitamin_a": 0.0,
+            "vitamin_c": 0.0,
+            "vitamin_d": 0.0
+        }
 
-    nutrient_keys = [
-        "kcal",
-        "carbs",
-        "protein",
-        "fat",
-        "fiber",
-        "calcium",
-        "iron",
-        "potassium",
-        "sodium",
-        "vitamin_a",
-        "vitamin_c",
-        "vitamin_d"
-    ]
+        for meal_name, food_name in meal.items():
 
-    nutrient_names = {
-        "kcal": "에너지(kcal)",
-        "carbs": "탄수화물(g)",
-        "protein": "단백질(g)",
-        "fat": "지방(g)",
-        "fiber": "식이섬유(g)",
-        "calcium": "칼슘(mg)",
-        "iron": "철(mg)",
-        "potassium": "칼륨(mg)",
-        "sodium": "나트륨(mg)",
-        "vitamin_a": "비타민 A(μg)",
-        "vitamin_c": "비타민 C(mg)",
-        "vitamin_d": "비타민 D(μg)"
-    }
+            if meal_name == "일차":
+                continue
 
-    selected_foods = [
-        food_name
-        for meal_name, food_name in selected_plan.items()
-        if meal_name != "일차"
-    ]
+            info = foods[food_name]
 
-    daily_nutrients = {
-        key: sum(
-            foods[food_name].get(key, 0)
-            for food_name in selected_foods
-        )
-        for key in nutrient_keys
-    }
+            for nutrient in total:
+                total[nutrient] += info[nutrient]
+
+        return total
+
+    # ==============================================
+    # 선택한 날짜 영양소 분석
+    # ==============================================
+
+    nutrients = calculate_nutrients(
+        selected_meal
+    )
+
+    st.divider()
+    st.markdown(
+        f"### 📊 {selected_day}일 차 영양소 분석"
+    )
 
     metric1, metric2, metric3, metric4 = st.columns(4)
 
     with metric1:
         st.metric(
-            "에너지",
-            f'{daily_nutrients["kcal"]:,.0f} kcal'
+            "예시 식단 에너지",
+            f"{nutrients['kcal']:,.0f} kcal"
         )
 
     with metric2:
         st.metric(
             "탄수화물",
-            f'{daily_nutrients["carbs"]:.1f} g'
+            f"{nutrients['carbs']:.1f} g"
         )
 
     with metric3:
         st.metric(
             "단백질",
-            f'{daily_nutrients["protein"]:.1f} g'
+            f"{nutrients['protein']:.1f} g"
         )
 
     with metric4:
         st.metric(
             "지방",
-            f'{daily_nutrients["fat"]:.1f} g'
+            f"{nutrients['fat']:.1f} g"
         )
 
-    # ==============================================
+    # ----------------------------------------------
     # 탄단지 에너지 비율
-    # ==============================================
+    # ----------------------------------------------
 
-    st.markdown("#### 🍚 탄수화물·단백질·지방 에너지 비율")
+    carb_kcal = nutrients["carbs"] * 4
+    protein_kcal = nutrients["protein"] * 4
+    fat_kcal = nutrients["fat"] * 9
 
-    macro_energy = {
-        "탄수화물": daily_nutrients["carbs"] * 4,
-        "단백질": daily_nutrients["protein"] * 4,
-        "지방": daily_nutrients["fat"] * 9
-    }
+    macro_total = (
+        carb_kcal + protein_kcal + fat_kcal
+    )
 
-    total_macro_energy = sum(macro_energy.values())
+    st.markdown("#### 🥧 탄수화물·단백질·지방 에너지 비율")
 
-    if total_macro_energy > 0:
+    if macro_total > 0:
 
         macro_df = pd.DataFrame({
-            "영양소": list(macro_energy.keys()),
-            "에너지": list(macro_energy.values())
+            "영양소": [
+                "탄수화물",
+                "단백질",
+                "지방"
+            ],
+            "에너지량(kcal)": [
+                carb_kcal,
+                protein_kcal,
+                fat_kcal
+            ]
         })
 
-        fig_macro = px.pie(
+        macro_df["비율(%)"] = (
+            macro_df["에너지량(kcal)"]
+            / macro_total * 100
+        )
+
+        fig = px.pie(
             macro_df,
             names="영양소",
-            values="에너지",
-            hole=0.45,
-            title="탄단지 에너지 구성 비율"
+            values="에너지량(kcal)",
+            hole=0.55
         )
 
-        fig_macro.update_traces(
-            textposition="inside",
-            textinfo="label+percent"
+        fig.update_traces(
+            texttemplate="%{label}<br>%{percent}",
+            textposition="inside"
         )
+
+        fig.update_layout(
+            margin=dict(t=20, b=20, l=10, r=10),
+            legend_title_text="영양소"
+        )
+
         st.plotly_chart(
-            fig_macro,
+            fig,
             use_container_width=True,
-            key="macro_chart"
+            key=f"macro_chart_{selected_day}"
         )
 
-    else:
-        st.info("영양소 데이터가 없어 비율을 계산할 수 없어요.")
+    # ----------------------------------------------
+    # 비타민과 무기질
+    # ----------------------------------------------
 
-    # ==============================================
-    # 영양소 분석표
-    # ==============================================
+    st.markdown("#### 🧬 비타민·무기질·식이섬유")
 
-    st.markdown("#### 🥦 상세 영양소")
+    nutrient_df = pd.DataFrame({
+        "영양소": [
+            "식이섬유",
+            "칼슘",
+            "철",
+            "칼륨",
+            "나트륨",
+            "비타민 A",
+            "비타민 C",
+            "비타민 D"
+        ],
+        "예시 식단 함량": [
+            f"{nutrients['fiber']:.1f} g",
+            f"{nutrients['calcium']:.1f} mg",
+            f"{nutrients['iron']:.1f} mg",
+            f"{nutrients['potassium']:.1f} mg",
+            f"{nutrients['sodium']:.1f} mg",
+            f"{nutrients['vitamin_a']:.1f} µg RAE",
+            f"{nutrients['vitamin_c']:.1f} mg",
+            f"{nutrients['vitamin_d']:.1f} µg"
+        ]
+    })
 
-    nutrient_rows = []
-
-    for key in nutrient_keys:
-
-        nutrient_rows.append({
-            "영양소": nutrient_names[key],
-            "섭취량": round(daily_nutrients[key], 2)
-        })
-
-    nutrient_df = pd.DataFrame(nutrient_rows)
-
-    # DataFrame 전용 렌더링 대신 HTML 표 사용
-    nutrient_html = nutrient_df.to_html(
+    nutrient_table_html = nutrient_df.to_html(
         index=False,
         border=0,
         classes="nutriday-table",
-        escape=True
+        justify="center"
     )
-
     st.markdown(
-        f'<div class="nutriday-table-wrap">{nutrient_html}</div>',
+        f'<div class="nutriday-table-wrap">{nutrient_table_html}</div>',
         unsafe_allow_html=True
     )
 
+    st.caption(
+        "음식별 영양 성분은 구현 시험을 위한 예시값이며, "
+        "실제 음식의 영양 성분과 다를 수 있어요."
+    )
+
     # ==============================================
-    # 30일 전체 에너지 분석
+    # 30일 식단 요약
     # ==============================================
 
     st.divider()
-    st.markdown("### 📈 30일 식단 에너지 분석")
+    st.markdown("### 📈 30일 식단 요약")
 
-    monthly_energy = []
+    daily_rows = []
 
     for day_plan in plan:
 
-        day_energy = sum(
-            foods[food_name]["kcal"]
-            for meal_name, food_name in day_plan.items()
-            if meal_name != "일차"
+        day_nutrients = calculate_nutrients(
+            day_plan
         )
 
-        monthly_energy.append({
-            "날짜": f'{day_plan["일차"]}일차',
-            "에너지(kcal)": day_energy
+        daily_rows.append({
+            "일차": day_plan["일차"],
+            "에너지(kcal)": day_nutrients["kcal"],
+            "탄수화물(g)": day_nutrients["carbs"],
+            "단백질(g)": day_nutrients["protein"],
+            "지방(g)": day_nutrients["fat"],
+            "식이섬유(g)": day_nutrients["fiber"]
         })
 
-    monthly_energy_df = pd.DataFrame(monthly_energy)
+    daily_df = pd.DataFrame(daily_rows)
+
+    avg_energy = daily_df[
+        "에너지(kcal)"
+    ].mean()
+
+    st.metric(
+        "30일 식단의 하루 평균 에너지",
+        f"{avg_energy:,.0f} kcal"
+    )
+
+    st.caption(
+        f"하루 에너지 참고값: {daily_energy:,.0f} kcal. "
+        "현재는 메뉴 조합을 생성하는 단계이므로 "
+        "실제 식단 에너지가 참고값과 일치하지 않을 수 있어요."
+    )
 
     fig_energy = px.line(
-        monthly_energy_df,
-        x="날짜",
+        daily_df,
+        x="일차",
         y="에너지(kcal)",
         markers=True,
         title="날짜별 예시 식단 에너지"
@@ -878,7 +1195,6 @@ for index, (meal_name, food_name) in enumerate(meal_names):
     st.plotly_chart(
         fig_energy,
         use_container_width=True
-        key="monthly_energy_chart"
     )
 
     # ==============================================
@@ -890,6 +1206,8 @@ for index, (meal_name, food_name) in enumerate(meal_names):
     st.markdown("### 💡 알아두기")
 
     st.markdown("""
+    - 식단은 입력한 선호도와 제외 조건을 반영해 구성한 예시예요.
+    - 현재 버전은 메뉴를 자동 조합하지만, 목표 에너지에 맞춰 음식의 분량을 최적화하지는 않아요.
     - 영양 성분은 예시 데이터이므로 실제 음식의 중량과 조리법에 따라 달라질 수 있어요.
     - 비타민과 무기질은 에너지를 직접 제공하지 않으므로 탄수화물·단백질·지방의 에너지 비율과 별도로 표시해요.
     - 개인에게 적합한 식단은 성장 상태, 건강 상태, 활동량 등 다양한 요인에 따라 달라질 수 있어요.
