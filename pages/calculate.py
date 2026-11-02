@@ -12,7 +12,8 @@ from datetime import date, timedelta
 st.set_page_config(
     page_title="한 달 맞춤 식단 | NutriDay",
     page_icon="🥗",
-    layout="wide"
+    layout="wide",
+    initial_sidebar_state="expanded",
 )
 
 # ==================================================
@@ -91,35 +92,38 @@ st.markdown("""
 # ==================================================
 # 사이드바
 # ==================================================
-
 with st.sidebar:
     st.markdown("## 🥗 NutriDay")
     st.caption("나에게 맞는 하루 영양 관리")
+    st.divider()
 
-    st.page_link("main.py", label="🏠 메인 페이지")
-    st.page_link(
-        "pages/calculate.py",
-        label="🥗 한 달 맞춤 식단"
-    )
+    email = st.session_state.get("auth_email")
 
+    st.markdown("### 👤 내 계정")
+    st.caption(email or "계정 이메일을 확인할 수 없어요.")
 
-# ==================================================
-# 제목
-# ==================================================
+    st.divider()
 
-st.markdown(
-    '<div class="main-title">🥗 나만의 한 달 식단</div>',
-    unsafe_allow_html=True
-)
+    st.page_link("main.py", label="🧪 기초대사량 & 영양 가이드")
+    st.page_link("pages/calculate.py", label="🥗 한 달 맞춤 식단")
+    st.page_link("pages/record.py", label="🍽️ 식사 기록 & 영양 관리")
 
-st.markdown(
-    '<div class="sub-text">'
-    '나의 생활 습관과 음식 선호도를 반영해 '
-    '30일 식단을 구성하고 영양소를 분석해 보세요.'
-    '</div>',
-    unsafe_allow_html=True
-)
+    st.divider()
 
+    if st.button("로그아웃", key="calculate_logout", use_container_width=True):
+        try:
+            supabase.auth.sign_out()
+        except Exception:
+            pass
+
+        for key in [
+            "auth_access_token",
+            "auth_refresh_token",
+            "auth_email",
+        ]:
+            st.session_state.pop(key, None)
+
+        st.rerun()
 
 # ==================================================
 # 하루 에너지 참고값 불러오기
