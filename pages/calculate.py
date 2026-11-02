@@ -814,7 +814,6 @@ if st.button(
 # ==================================================
 
 if "monthly_plan" in st.session_state:
-
     st.divider()
     st.markdown("### 🗓️ 나의 30일 식단표")
 
