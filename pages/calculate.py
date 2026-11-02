@@ -665,29 +665,28 @@ if "monthly_plan" in st.session_state:
         if item["일차"] == selected_day
     )
 
-    meal_columns = st.columns(
-        len(selected_plan) - 1
-    )
+meal_names = [
+    (meal_name, food_name)
+    for meal_name, food_name in selected_plan.items()
+    if meal_name != "일차"
+]
 
-    for index, (meal_name, food_name) in enumerate(
-        selected_plan.items()
-    ):
+meal_columns = st.columns(len(meal_names))
 
-        if meal_name == "일차":
-            continue
+for index, (meal_name, food_name) in enumerate(meal_names):
 
-        with meal_columns[index]:
+    with meal_columns[index]:
 
-            st.markdown(
-                f"""
-                <div class="meal-card">
-                    <h4>{meal_name}</h4>
-                    <p>{food_name}</p>
-                    <small>{foods[food_name]["kcal"]} kcal</small>
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
+        st.markdown(
+            f"""
+            <div class="meal-card">
+                <h4>{meal_name}</h4>
+                <p>{food_name}</p>
+                <small>{foods[food_name]["kcal"]} kcal</small>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
     st.divider()
 
