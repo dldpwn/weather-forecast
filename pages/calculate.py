@@ -20,74 +20,102 @@ st.set_page_config(
 # 디자인
 # ==================================================
 
-st.markdown("""
-<style>
-    html, body, p, label,
-    h1, h2, h3, h4, h5, h6,
-    .stMarkdown,
-    [data-testid="stMetricValue"],
-    [data-testid="stMetricLabel"] {
-        font-family: 'Gowun Dodum', sans-serif !important;
+st.markdown(
+    """
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap');
+
+    html, body, [class*="css"], p, label,
+    h1, h2, h3, h4, span, div {
+        font-family: 'Gowun Dodum', sans-serif;
+    }
+
+    .stApp {
+        background: #FBF9F1;
+        color: #263B32;
+    }
+
+    [data-testid="stSidebar"] {
+        background: #EEF6EF;
+    }
+
+    [data-testid="stSidebarNav"] {
+        display: none;
     }
 
     .main-title {
-        font-size: 2rem;
-        font-weight: 700;
         color: #377D61;
-        margin-bottom: 0.3rem;
+        font-size: 2rem;
+        font-weight: 800;
     }
 
-    .sub-text {
-        color: #777777;
-        font-size: 1rem;
-        margin-bottom: 1.5rem;
+    .info-card, .meal-card {
+        background: #F0F7F0;
+        border: 1px solid #DCEADF;
+        border-radius: 16px;
+        padding: 1rem;
+        margin-bottom: .7rem;
     }
 
     .meal-card {
-        background-color: #F1F8F3;
-        padding: 16px;
-        border-radius: 12px;
-        margin-bottom: 10px;
+        min-height: 100px;
+        text-align: center;
     }
 
-    .nutriday-table-wrap {
-        width: 100%;
-        overflow-x: auto;
+    div[data-testid="stMetric"] {
+        background: #F0F7F0;
+        border: 1px solid #DCEADF;
+        border-radius: 14px;
+        padding: 1rem;
+    }
+
+    div.stButton > button,
+    div.stFormSubmitButton > button {
+        background: #4D9274;
+        color: white;
+        border: 0;
+        border-radius: 12px;
+        padding: .65rem 1rem;
+        font-weight: 700;
+    }
+
+    div.stButton > button:hover,
+    div.stFormSubmitButton > button:hover {
+        background: #377D61;
+        color: white;
+    }
+
+    div[data-baseweb="input"] input,
+    div[data-baseweb="textarea"] textarea,
+    div[data-baseweb="select"] > div {
+        background: white;
+        border-radius: 10px;
+        border-color: #DCEADF;
+    }
+
+    button[data-baseweb="tab"] {
+        color: #69756E;
+        font-weight: 600;
+    }
+
+    button[data-baseweb="tab"][aria-selected="true"] {
+        color: #377D61;
+        border-bottom-color: #4D9274;
+    }
+
+    [data-testid="stDataFrame"] {
         border: 1px solid #DCEADF;
         border-radius: 12px;
-        background: #FFFFFF;
-        margin: 0.5rem 0 1rem;
     }
 
-    .nutriday-table {
-        width: 100%;
-        border-collapse: collapse;
-        color: #263B32;
-        font-size: 0.92rem;
+    hr {
+        border-color: #DCEADF;
     }
 
-    .nutriday-table th {
-        background: #EEF6EF;
-        color: #377D61;
-        font-weight: 700;
-        padding: 0.7rem;
-        text-align: center;
-        white-space: nowrap;
-        border-bottom: 1px solid #DCEADF;
-    }
-
-    .nutriday-table td {
-        padding: 0.65rem;
-        text-align: center;
-        border-bottom: 1px solid #EDF2ED;
-    }
-
-    .nutriday-table tr:last-child td {
-        border-bottom: 0;
-    }
-</style>
-""", unsafe_allow_html=True)
-
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
 
 # ==================================================
 # 사이드바
