@@ -134,7 +134,7 @@ st.markdown(
 )
 
 # ==================================================
-# 제목
+# 기본 설정
 # ==================================================
 
 st.title("🍽️ 식사 기록 & 영양 관리")
@@ -153,50 +153,133 @@ DATA_FILE = (
     Path(__file__).resolve().parent.parent
     / "meal_records.json"
 )
+
 # ==================================================
-# 데이터 저장 설정
+# 사이드바
 # ==================================================
 
-DATA_FILE = Path(__file__).resolve().parent.parent / "meal_records.json"
+with st.sidebar:
 
-MEALS = ["아침", "점심", "저녁", "간식"]
+    st.markdown("## 🥗 NutriDay")
+    st.caption("나에게 맞는 하루 영양 관리")
+    st.divider()
 
-NUTRIENTS = [
-    "열량(kcal)",
-    "탄수화물(g)",
-    "단백질(g)",
-    "지방(g)",
-    "나트륨(mg)",
-    "칼슘(mg)",
-    "철분(mg)",
-    "칼륨(mg)"
-]
+    email = st.session_state.get("auth_email")
 
-COLUMNS = ["음식 이름", "섭취량(g)"] + NUTRIENTS
+    st.markdown("### 👤 내 계정")
+    st.caption(email or "계정 이메일을 확인할 수 없어요.")
 
+    st.divider()
+
+    st.page_link(
+        "main.py",
+        label="🧪 기초대사량 & 영양 가이드"
+    )
+
+    st.page_link(
+        "pages/calculate.py",
+        label="🥗 한 달 맞춤 식단"
+    )
+
+    st.page_link(
+        "pages/record.py",
+        label="🍽️ 식사 기록 & 영양 관리"
+    )
+
+    st.divider()
+
+    if st.button(
+        "로그아웃",
+        key="record_logout",
+        use_container_width=True
+    ):
+
+        try:
+            supabase.auth.sign_out()
+        except Exception:
+            pass
+
+        for key in [
+            "auth_access_token",
+            "auth_refresh_token",
+            "auth_email"
+        ]:
+            st.session_state.pop(key, None)
+
+        st.rerun()
+
+
+# ==================================================
+# 데이터 저장 및 불러오기
+# ==================================================
 
 def load_records():
-    """저장된 식사 기록 불러오기"""
+
     if DATA_FILE.exists():
+
         try:
             with open(DATA_FILE, "r", encoding="utf-8") as file:
-                return json.load(file)
+                data = json.load(file)
+
+            if isinstance(data, dict):
+                return data
+
         except (json.JSONDecodeError, OSError):
-            st.warning("저장된 기록을 읽지 못했습니다. 새 기록을 시작합니다.")
+            st.warning(
+                "저장된 기록을 불러오지 못했습니다."
+            )
 
     return {}
 
 
 def save_records(records):
-    """식사 기록 JSON 파일에 저장"""
+
     with open(DATA_FILE, "w", encoding="utf-8") as file:
-        json.dump(records, file, ensure_ascii=False, indent=4)
+
+        json.dump(
+            records,
+            file,
+            ensure_ascii=False,
+            indent=4
+        )
+
+
+def normalize_foods(food_list):
+    """
+    기존 기록에 영양성분 정보가 들어 있더라도
+    음식 이름과 섭취량만 가져오도록 변환
+    """
+
+    normalized = []
+
+    for food in food_list:
+
+        if not isinstance(food, dict):
+            continue
+
+        name = str(food.get("음식 이름", "")).strip()
+
+        if not name:
+            continue
+
+        try:
+            amount = float(food.get("섭취량(g)", 0) or 0)
+        except (ValueError, TypeError):
+            amount = 0.0
+
+        normalized.append({
+            "음식 이름": name,
+            "섭취량(g)": amount
+        })
+
+    return normalized
 
 
 if "meal_records" not in st.session_state:
     st.session_state["meal_records"] = load_records()
 
 records = st.session_state["meal_records"]
+
 
 # ==================================================
 # 날짜 선택
@@ -212,23 +295,27 @@ selected_date = st.date_input(
 
 date_key = selected_date.isoformat()
 
-st.caption(f"선택한 날짜: {selected_date.strftime('%Y년 %m월 %d일')}")
+st.caption(
+    f"선택한 날짜: {selected_date.strftime('%Y년 %m월 %d일')}"
+)
+
 
 # ==================================================
 # 식사 기록 입력
 # ==================================================
 
 st.divider()
+
 st.subheader("🥗 오늘 먹은 음식 입력")
 
 st.info(
-    "음식 이름과 섭취량, 영양성분을 입력해 주세요. "
-    "한 끼에 여러 음식을 추가할 수 있습니다."
+    "음식 이름과 섭취량만 입력해 주세요. "
+    "영양성분은 식품 데이터베이스 연결 후 자동으로 분석됩니다."
 )
 
-meal_data = {}
-
 tabs = st.tabs(MEALS)
+
+meal_data = {}
 
 for index, meal in enumerate(MEALS):
 
@@ -236,18 +323,22 @@ for index, meal in enumerate(MEALS):
 
         st.markdown(f"### 🍴 {meal}")
 
-        saved_foods = records.get(date_key, {}).get(meal, [])
+        saved_foods = records.get(
+            date_key, {}
+        ).get(meal, [])
+
+        saved_foods = normalize_foods(saved_foods)
 
         if saved_foods:
-            default_df = pd.DataFrame(saved_foods)
-            default_df = default_df.reindex(columns=COLUMNS, fill_value=0)
-        else:
+
             default_df = pd.DataFrame(
-                [{
-                    "음식 이름": "",
-                    "섭취량(g)": 0,
-                    **{nutrient: 0 for nutrient in NUTRIENTS}
-                }],
+                saved_foods,
+                columns=COLUMNS
+            )
+
+        else:
+
+            default_df = pd.DataFrame(
                 columns=COLUMNS
             )
 
@@ -258,61 +349,27 @@ for index, meal in enumerate(MEALS):
             use_container_width=True,
             hide_index=True,
             column_config={
+
                 "음식 이름": st.column_config.TextColumn(
                     "음식 이름",
                     help="먹은 음식의 이름을 입력하세요.",
-                    width="medium"
+                    required=True
                 ),
+
                 "섭취량(g)": st.column_config.NumberColumn(
                     "섭취량(g)",
+                    help="실제로 먹은 양을 입력하세요.",
                     min_value=0,
                     step=10,
-                    format="%.1f"
-                ),
-                "열량(kcal)": st.column_config.NumberColumn(
-                    "열량(kcal)",
-                    min_value=0,
-                    step=1
-                ),
-                "탄수화물(g)": st.column_config.NumberColumn(
-                    "탄수화물(g)",
-                    min_value=0,
-                    step=1
-                ),
-                "단백질(g)": st.column_config.NumberColumn(
-                    "단백질(g)",
-                    min_value=0,
-                    step=1
-                ),
-                "지방(g)": st.column_config.NumberColumn(
-                    "지방(g)",
-                    min_value=0,
-                    step=1
-                ),
-                "나트륨(mg)": st.column_config.NumberColumn(
-                    "나트륨(mg)",
-                    min_value=0,
-                    step=10
-                ),
-                "칼슘(mg)": st.column_config.NumberColumn(
-                    "칼슘(mg)",
-                    min_value=0,
-                    step=10
-                ),
-                "철분(mg)": st.column_config.NumberColumn(
-                    "철분(mg)",
-                    min_value=0,
-                    step=1
-                ),
-                "칼륨(mg)": st.column_config.NumberColumn(
-                    "칼륨(mg)",
-                    min_value=0,
-                    step=10
+                    format="%.1f",
+                    required=True
                 )
+
             }
         )
 
         meal_data[meal] = edited_df
+
 
 # ==================================================
 # 기록 저장
@@ -320,9 +377,12 @@ for index, meal in enumerate(MEALS):
 
 st.divider()
 
+st.subheader("💾 기록 관리")
+
 col1, col2 = st.columns(2)
 
 with col1:
+
     save_button = st.button(
         "💾 식사 기록 저장",
         use_container_width=True,
@@ -330,6 +390,7 @@ with col1:
     )
 
 with col2:
+
     delete_button = st.button(
         "🗑️ 선택한 날짜 기록 삭제",
         use_container_width=True
@@ -343,32 +404,42 @@ if save_button:
     for meal in MEALS:
 
         df = meal_data[meal].copy()
-        df = df.fillna(0)
 
-        # 음식 이름이 입력된 행만 저장
-        df["음식 이름"] = df["음식 이름"].astype(str).str.strip()
+        df = df.dropna(subset=["음식 이름"])
+
+        df["음식 이름"] = (
+            df["음식 이름"]
+            .astype(str)
+            .str.strip()
+        )
+
         df = df[df["음식 이름"] != ""]
 
         saved_list = []
 
         for _, row in df.iterrows():
 
-            food = {}
+            try:
+                amount = float(row["섭취량(g)"])
+            except (ValueError, TypeError):
+                amount = 0.0
 
-            for column in COLUMNS:
-                if column == "음식 이름":
-                    food[column] = str(row[column])
-                else:
-                    food[column] = float(row[column])
+            if amount <= 0:
+                continue
 
-            saved_list.append(food)
+            saved_list.append({
+                "음식 이름": str(row["음식 이름"]),
+                "섭취량(g)": amount
+            })
 
         new_day_record[meal] = saved_list
 
-    # 모든 식사 칸이 비어 있으면 날짜 기록 제거
     if not any(new_day_record.values()):
+
         records.pop(date_key, None)
+
     else:
+
         records[date_key] = new_day_record
 
     save_records(records)
@@ -376,19 +447,92 @@ if save_button:
     st.session_state["meal_records"] = records
 
     st.success("식사 기록이 저장되었습니다!")
+
     st.rerun()
 
+
+# ==================================================
+# 날짜별 기록 삭제
+# ==================================================
 
 if delete_button:
 
     if date_key in records:
+
         del records[date_key]
+
         save_records(records)
+
         st.session_state["meal_records"] = records
-        st.success("선택한 날짜의 기록을 삭제했습니다.")
+
+        # 해당 날짜의 입력창 상태 초기화
+        for meal in MEALS:
+
+            editor_key = f"editor_{date_key}_{meal}"
+
+            st.session_state.pop(editor_key, None)
+
+        st.success(
+            "선택한 날짜의 모든 식사 기록을 삭제했습니다."
+        )
+
         st.rerun()
+
     else:
+
         st.warning("삭제할 기록이 없습니다.")
+
+
+# ==================================================
+# 저장된 음식 기록 확인
+# ==================================================
+
+st.divider()
+
+st.subheader("📋 선택한 날짜의 식사 기록")
+
+day_record = records.get(date_key, {})
+
+has_records = False
+
+for meal in MEALS:
+
+    foods = normalize_foods(
+        day_record.get(meal, [])
+    )
+
+    if foods:
+
+        has_records = True
+
+        with st.expander(
+            f"🍴 {meal} ({len(foods)}개 음식)",
+            expanded=True
+        ):
+
+            display_df = pd.DataFrame(foods)
+
+            st.dataframe(
+                display_df,
+                use_container_width=True,
+                hide_index=True
+            )
+
+            total_amount = sum(
+                food["섭취량(g)"]
+                for food in foods
+            )
+
+            st.caption(
+                f"총 섭취량: {total_amount:,.1f}g"
+            )
+
+if not has_records:
+
+    st.info(
+        "선택한 날짜에 저장된 식사 기록이 없습니다."
+    )
+
 
 
 # ==================================================
@@ -646,4 +790,14 @@ st.plotly_chart(
 st.caption(
     "현재 그래프는 음식의 무게를 기준으로 표시합니다. "
     "영양성분 데이터베이스 연결 후 열량과 영양소별 그래프로 확장됩니다."
+)
+
+# ==================================================
+# 마무리
+# ==================================================
+
+st.divider()
+
+st.caption(
+    "NutriDay | 나의 식사 기록을 통해 건강한 식습관을 만들어 보세요."
 )
