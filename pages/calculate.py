@@ -799,10 +799,10 @@ for index, (meal_name, food_name) in enumerate(meal_names):
             textposition="inside",
             textinfo="label+percent"
         )
-
         st.plotly_chart(
             fig_macro,
-            use_container_width=True
+            use_container_width=True,
+            key="macro_chart"
         )
 
     else:
@@ -878,6 +878,7 @@ for index, (meal_name, food_name) in enumerate(meal_names):
     st.plotly_chart(
         fig_energy,
         use_container_width=True
+        key="monthly_energy_chart"
     )
 
     # ==============================================
