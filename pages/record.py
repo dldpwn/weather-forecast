@@ -11,12 +11,19 @@ from datetime import date, timedelta
 # ==================================================
 
 st.set_page_config(
-    page_title="NutriDay | 식사 기록",
+    page_title="식사 기록 | NutriDay",
     page_icon="🍽️",
-    layout="wide",
-    initial_sidebar_state="collapsed"
+    layout="wide"
 )
 
+st.page_link(
+    "main.py",
+    label="home"
+)
+st.page_link(
+    "pages/calculate.py",
+    label="🥗 식단 플래너"
+)
 # ==================================================
 # 디자인
 # ==================================================
