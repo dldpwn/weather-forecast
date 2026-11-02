@@ -459,3 +459,438 @@ foods = {
         "vitamin_a": 100, "vitamin_c": 20, "vitamin_d": 0
     }
 }
+
+# ==================================================
+# 음식 후보 생성
+# ==================================================
+
+def matches_food(name, info, terms):
+    """입력한 단어가 기존 메뉴 이름 또는 음식 분류와 일치하는지 확인한다."""
+    name_lower = name.casefold()
+    group_lower = str(info.get("group", "")).casefold()
+
+    return any(
+        term.casefold() in name_lower or term.casefold() in group_lower
+        for term in terms
+        if term.strip()
+    )
+
+
+def get_food_candidates(style, excluded):
+    candidates = []
+
+    for name, info in foods.items():
+
+        if matches_food(name, info, excluded):
+            continue
+
+        if style == "한식 위주":
+            if info["style"] not in ["한식", "다양"]:
+                continue
+
+        elif style == "간편식 위주":
+            if info["style"] not in ["간편식", "다양"]:
+                continue
+
+        candidates.append(name)
+
+    return candidates
+
+
+# ==================================================
+# 식단 생성
+# ==================================================
+
+def generate_monthly_plan(
+    style,
+    preference,
+    excluded,
+    meal_count,
+    seed=None
+):
+    """
+    30일 식단 생성.
+
+    선호 음식은 후보 선정에 우선 반영한다.
+    최근 메뉴의 반복을 줄이되, 같은 음식이 무조건 제외되는
+    것은 아니므로 음식 후보 수가 적을 때도 생성할 수 있다.
+    """
+
+    rng = random.Random(seed)
+
+    candidates = get_food_candidates(style, excluded)
+
+    if not candidates:
+        return None
+
+    plan = []
+    recent_meals = []
+
+    meal_names = ["아침", "점심", "저녁"]
+
+    if meal_count == "세 끼 + 간식":
+        meal_names.append("간식")
+
+    for day in range(1, 31):
+
+        day_plan = {
+            "일차": day
+        }
+
+        for meal_name in meal_names:
+
+            available = [
+                name for name in candidates
+                if name not in recent_meals[-6:]
+            ]
+
+            if not available:
+                available = candidates.copy()
+
+            preferred_available = [
+                name for name in available
+                if matches_food(name, foods[name], preference)
+            ]
+
+            if preferred_available and rng.random() < 0.7:
+                chosen = rng.choice(preferred_available)
+            else:
+                chosen = rng.choice(available)
+
+            day_plan[meal_name] = chosen
+
+            recent_meals.append(chosen)
+
+            if len(recent_meals) > 12:
+                recent_meals.pop(0)
+
+        plan.append(day_plan)
+
+    return plan
+
+
+# ==================================================
+# 식단 생성 버튼
+# ==================================================
+
+st.divider()
+st.markdown("### 📅 30일 식단표 만들기")
+
+st.write(
+    "설정한 조건에 맞춰 30일 메뉴를 자동으로 구성해요. "
+    "생성된 식단은 날짜별로 확인하고 다시 추천받을 수 있어요."
+)
+
+if st.button(
+    "✨ 나만의 한 달 식단 생성하기",
+    use_container_width=True
+):
+
+    new_plan = generate_monthly_plan(
+        style=meal_style,
+        preference=all_preferences,
+        excluded=all_excluded,
+        meal_count=meal_count,
+        seed=None
+    )
+
+    if new_plan is None:
+        st.error(
+            "현재 제외 조건에 맞는 음식이 없어요. "
+            "제외할 음식 설정을 조정해 주세요."
+        )
+
+    else:
+        st.session_state["monthly_plan"] = new_plan
+        st.session_state["monthly_plan_settings"] = {
+            "style": meal_style,
+            "preference": all_preferences,
+            "excluded": all_excluded,
+            "meal_count": meal_count,
+            "goal": goal,
+            "energy": daily_energy
+        }
+
+        st.session_state.pop(
+            "selected_day",
+            None
+        )
+
+        st.success("30일 식단표를 생성했어요!")
+
+
+# ==================================================
+# 식단이 생성된 경우에만 표시
+# ==================================================
+
+if "monthly_plan" in st.session_state:
+
+    plan = st.session_state["monthly_plan"]
+
+    st.divider()
+    st.markdown("### 🗓️ 나의 30일 식단표")
+
+    st.caption(
+        "각 날짜의 메뉴를 확인할 수 있어요. "
+        "식단을 다시 생성하면 새로운 메뉴 조합이 만들어져요."
+    )
+
+    plan_df = pd.DataFrame(plan)
+
+    # DataFrame 전용 렌더링 대신 HTML 표 사용
+    plan_html = plan_df.to_html(
+        index=False,
+        border=0,
+        classes="nutriday-table",
+        escape=True
+    )
+
+    st.markdown(
+        f'<div class="nutriday-table-wrap">{plan_html}</div>',
+        unsafe_allow_html=True
+    )
+
+    st.divider()
+    st.markdown("### 🔍 날짜별 식단 확인")
+
+    selected_day = st.selectbox(
+        "확인할 날짜를 선택하세요.",
+        options=list(range(1, 31)),
+        format_func=lambda x: f"{x}일차",
+        key="selected_day"
+    )
+
+    selected_plan = next(
+        item for item in plan
+        if item["일차"] == selected_day
+    )
+
+    meal_columns = st.columns(
+        len(selected_plan) - 1
+    )
+
+    for index, (meal_name, food_name) in enumerate(
+        selected_plan.items()
+    ):
+
+        if meal_name == "일차":
+            continue
+
+        with meal_columns[index]:
+
+            st.markdown(
+                f"""
+                <div class="meal-card">
+                    <h4>{meal_name}</h4>
+                    <p>{food_name}</p>
+                    <small>{foods[food_name]["kcal"]} kcal</small>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+    st.divider()
+
+    # ==============================================
+    # 영양소 계산
+    # ==============================================
+
+    st.markdown("### 📊 식단 영양소 분석")
+
+    nutrient_keys = [
+        "kcal",
+        "carbs",
+        "protein",
+        "fat",
+        "fiber",
+        "calcium",
+        "iron",
+        "potassium",
+        "sodium",
+        "vitamin_a",
+        "vitamin_c",
+        "vitamin_d"
+    ]
+
+    nutrient_names = {
+        "kcal": "에너지(kcal)",
+        "carbs": "탄수화물(g)",
+        "protein": "단백질(g)",
+        "fat": "지방(g)",
+        "fiber": "식이섬유(g)",
+        "calcium": "칼슘(mg)",
+        "iron": "철(mg)",
+        "potassium": "칼륨(mg)",
+        "sodium": "나트륨(mg)",
+        "vitamin_a": "비타민 A(μg)",
+        "vitamin_c": "비타민 C(mg)",
+        "vitamin_d": "비타민 D(μg)"
+    }
+
+    selected_foods = [
+        food_name
+        for meal_name, food_name in selected_plan.items()
+        if meal_name != "일차"
+    ]
+
+    daily_nutrients = {
+        key: sum(
+            foods[food_name].get(key, 0)
+            for food_name in selected_foods
+        )
+        for key in nutrient_keys
+    }
+
+    metric1, metric2, metric3, metric4 = st.columns(4)
+
+    with metric1:
+        st.metric(
+            "에너지",
+            f'{daily_nutrients["kcal"]:,.0f} kcal'
+        )
+
+    with metric2:
+        st.metric(
+            "탄수화물",
+            f'{daily_nutrients["carbs"]:.1f} g'
+        )
+
+    with metric3:
+        st.metric(
+            "단백질",
+            f'{daily_nutrients["protein"]:.1f} g'
+        )
+
+    with metric4:
+        st.metric(
+            "지방",
+            f'{daily_nutrients["fat"]:.1f} g'
+        )
+
+    # ==============================================
+    # 탄단지 에너지 비율
+    # ==============================================
+
+    st.markdown("#### 🍚 탄수화물·단백질·지방 에너지 비율")
+
+    macro_energy = {
+        "탄수화물": daily_nutrients["carbs"] * 4,
+        "단백질": daily_nutrients["protein"] * 4,
+        "지방": daily_nutrients["fat"] * 9
+    }
+
+    total_macro_energy = sum(macro_energy.values())
+
+    if total_macro_energy > 0:
+
+        macro_df = pd.DataFrame({
+            "영양소": list(macro_energy.keys()),
+            "에너지": list(macro_energy.values())
+        })
+
+        fig_macro = px.pie(
+            macro_df,
+            names="영양소",
+            values="에너지",
+            hole=0.45,
+            title="탄단지 에너지 구성 비율"
+        )
+
+        fig_macro.update_traces(
+            textposition="inside",
+            textinfo="label+percent"
+        )
+
+        st.plotly_chart(
+            fig_macro,
+            use_container_width=True
+        )
+
+    else:
+        st.info("영양소 데이터가 없어 비율을 계산할 수 없어요.")
+
+    # ==============================================
+    # 영양소 분석표
+    # ==============================================
+
+    st.markdown("#### 🥦 상세 영양소")
+
+    nutrient_rows = []
+
+    for key in nutrient_keys:
+
+        nutrient_rows.append({
+            "영양소": nutrient_names[key],
+            "섭취량": round(daily_nutrients[key], 2)
+        })
+
+    nutrient_df = pd.DataFrame(nutrient_rows)
+
+    # DataFrame 전용 렌더링 대신 HTML 표 사용
+    nutrient_html = nutrient_df.to_html(
+        index=False,
+        border=0,
+        classes="nutriday-table",
+        escape=True
+    )
+
+    st.markdown(
+        f'<div class="nutriday-table-wrap">{nutrient_html}</div>',
+        unsafe_allow_html=True
+    )
+
+    # ==============================================
+    # 30일 전체 에너지 분석
+    # ==============================================
+
+    st.divider()
+    st.markdown("### 📈 30일 식단 에너지 분석")
+
+    monthly_energy = []
+
+    for day_plan in plan:
+
+        day_energy = sum(
+            foods[food_name]["kcal"]
+            for meal_name, food_name in day_plan.items()
+            if meal_name != "일차"
+        )
+
+        monthly_energy.append({
+            "날짜": f'{day_plan["일차"]}일차',
+            "에너지(kcal)": day_energy
+        })
+
+    monthly_energy_df = pd.DataFrame(monthly_energy)
+
+    fig_energy = px.line(
+        monthly_energy_df,
+        x="날짜",
+        y="에너지(kcal)",
+        markers=True,
+        title="날짜별 예시 식단 에너지"
+    )
+
+    fig_energy.update_layout(
+        xaxis_title="날짜",
+        yaxis_title="에너지(kcal)"
+    )
+
+    st.plotly_chart(
+        fig_energy,
+        use_container_width=True
+    )
+
+    # ==============================================
+    # 안내
+    # ==============================================
+
+    st.divider()
+
+    st.markdown("### 💡 알아두기")
+
+    st.markdown("""
+    - 영양 성분은 예시 데이터이므로 실제 음식의 중량과 조리법에 따라 달라질 수 있어요.
+    - 비타민과 무기질은 에너지를 직접 제공하지 않으므로 탄수화물·단백질·지방의 에너지 비율과 별도로 표시해요.
+    - 개인에게 적합한 식단은 성장 상태, 건강 상태, 활동량 등 다양한 요인에 따라 달라질 수 있어요.
+    """)
