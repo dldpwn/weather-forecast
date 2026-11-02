@@ -28,39 +28,110 @@ st.page_link(
 # 디자인
 # ==================================================
 
-st.markdown("""
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap');
+st.markdown(
+    """
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap');
 
-html, body, [class*="css"] {
-    font-family: 'Gowun Dodum', sans-serif;
-}
+    html, body, [class*="css"], p, label,
+    h1, h2, h3, h4, span, div {
+        font-family: 'Gowun Dodum', sans-serif;
+    }
 
-.stApp {
-    background-color: #FBF9F1;
-    color: #263B32;
-}
+    .stApp {
+        background: #FBF9F1;
+        color: #263B32;
+    }
 
-h1, h2, h3 {
-    color: #377D61;
-}
+    [data-testid="stSidebar"] {
+        background: #EEF6EF;
+    }
 
-.record-card {
-    background-color: #F0F7F0;
-    border: 1px solid #DCEBDD;
-    border-radius: 14px;
-    padding: 18px;
-    margin-bottom: 12px;
-}
+    [data-testid="stSidebarNav"] {
+        display: none;
+    }
 
-div[data-testid="stMetric"] {
-    background-color: #F0F7F0;
-    border: 1px solid #DCEBDD;
-    border-radius: 12px;
-    padding: 15px;
-}
-</style>
-""", unsafe_allow_html=True)
+    .main-title {
+        color: #377D61;
+        font-size: 2rem;
+        font-weight: 800;
+        margin-bottom: .25rem;
+    }
+
+    .sub-text {
+        color: #69756E;
+        margin-bottom: 1.2rem;
+    }
+
+    .info-card {
+        background: #F0F7F0;
+        border: 1px solid #DCEADF;
+        border-radius: 16px;
+        padding: 1rem 1.1rem;
+        margin-bottom: .7rem;
+    }
+
+    div[data-testid="stMetric"] {
+        background: #F0F7F0;
+        border: 1px solid #DCEADF;
+        border-radius: 14px;
+        padding: 1rem;
+    }
+
+    div.stButton > button,
+    div.stFormSubmitButton > button {
+        background: #4D9274;
+        color: white;
+        border: 0;
+        border-radius: 12px;
+        padding: .65rem 1rem;
+        font-weight: 700;
+        transition: .2s;
+    }
+
+    div.stButton > button:hover,
+    div.stFormSubmitButton > button:hover {
+        background: #377D61;
+        color: white;
+        border: 0;
+    }
+
+    div[data-baseweb="input"] input,
+    div[data-baseweb="textarea"] textarea,
+    div[data-baseweb="select"] > div {
+        background: #FFFFFF;
+        border-radius: 10px;
+        border-color: #DCEADF;
+    }
+
+    button[data-baseweb="tab"] {
+        color: #69756E;
+        font-weight: 600;
+    }
+
+    button[data-baseweb="tab"][aria-selected="true"] {
+        color: #377D61;
+        border-bottom-color: #4D9274;
+    }
+
+    [data-testid="stDataFrame"],
+    [data-testid="stDataEditor"] {
+        border: 1px solid #DCEADF;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    hr {
+        border-color: #DCEADF;
+    }
+
+    [data-testid="stAlert"] {
+        border-radius: 12px;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
 # ==================================================
 # 제목
