@@ -1,20 +1,61 @@
+
 from pathlib import Path
+import unicodedata
+import re
+
 import pandas as pd
 import streamlit as st
-import re
 
 
 # ==================================================
-# CSV 파일 경로
+# CSV 파일 경로 설정
 # ==================================================
 
 BASE_DIR = Path(__file__).resolve().parent
+DATA_DIR = BASE_DIR / "data"
 
-CSV_PATH = (
-    BASE_DIR
-    / "data"
-    / "전국통합식품영양성분정보표준데이터.csv"
-)
+EXPECTED_FILENAME = "전국통합식품영양성분정보표준데이터.csv"
+
+
+def find_food_csv():
+
+    if not DATA_DIR.exists():
+        raise FileNotFoundError(
+            f"식품 데이터 폴더를 찾을 수 없습니다: {DATA_DIR}"
+        )
+
+    expected_name = unicodedata.normalize(
+        "NFC",
+        EXPECTED_FILENAME
+    )
+
+    for file_path in DATA_DIR.iterdir():
+
+        if not file_path.is_file():
+            continue
+
+        actual_name = unicodedata.normalize(
+            "NFC",
+            file_path.name
+        )
+
+        if actual_name == expected_name:
+            return file_path
+
+    csv_files = [
+        file.name
+        for file in DATA_DIR.iterdir()
+        if file.is_file() and file.suffix.lower() == ".csv"
+    ]
+
+    raise FileNotFoundError(
+        "식품 데이터 파일을 찾을 수 없습니다.\n"
+        f"확인한 폴더: {DATA_DIR}\n"
+        f"폴더 안의 CSV 파일: {csv_files}"
+    )
+
+
+CSV_PATH = find_food_csv()
 
 
 # ==================================================
@@ -51,7 +92,6 @@ NUTRIENT_COLUMNS = {
 # ==================================================
 
 def to_number(value):
-    """빈칸이나 숫자가 아닌 값을 안전하게 처리한다."""
 
     if pd.isna(value):
         return 0.0
@@ -69,7 +109,7 @@ def to_number(value):
 
 
 # ==================================================
-# 식품 데이터 불러오기
+# 식품 데이터베이스 불러오기
 # ==================================================
 
 @st.cache_data
@@ -77,8 +117,7 @@ def load_food_database():
 
     if not CSV_PATH.exists():
         raise FileNotFoundError(
-            f"식품 데이터 파일을 찾을 수 없습니다.\n"
-            f"확인한 경로: {CSV_PATH}"
+            f"식품 데이터 파일이 없습니다: {CSV_PATH}"
         )
 
     encodings = [
@@ -106,24 +145,26 @@ def load_food_database():
 
     if df is None:
         raise ValueError(
-            f"CSV 인코딩을 확인할 수 없습니다: {last_error}"
-        )
+            "CSV 파일의 문자 인코딩을 확인할 수 없습니다."
+        ) from last_error
 
+    # 필수 열 확인
     required_columns = [
         "식품명",
         "데이터구분명",
         "영양성분함량기준량"
     ]
 
-    missing = [
+    missing_columns = [
         column
         for column in required_columns
         if column not in df.columns
     ]
 
-    if missing:
+    if missing_columns:
         raise ValueError(
-            f"CSV에 필요한 열이 없습니다: {missing}"
+            "CSV 파일에 필요한 열이 없습니다: "
+            + ", ".join(missing_columns)
         )
 
     # 음식 데이터만 사용
@@ -144,9 +185,18 @@ def load_food_database():
     df = df[
         df["식품명"].ne("")
         & df["식품명"].ne("nan")
-    ]
+    ].copy()
 
-    # 기준량 구분
+    # 영양소 열이 없는 경우 0으로 처리
+    for column in NUTRIENT_COLUMNS.values():
+
+        if column in df.columns:
+            df[column] = df[column].apply(to_number)
+
+        else:
+            df[column] = 0.0
+
+    # 기준량 정리
     df["기준단위"] = (
         df["영양성분함량기준량"]
         .astype(str)
@@ -162,24 +212,18 @@ def load_food_database():
         errors="coerce"
     )
 
-    # 100g / 100ml 기준 데이터만 사용
+    # 100g 또는 100ml 기준 데이터만 사용
     df = df[
         df["기준단위"].isin(["100g", "100ml"])
     ].copy()
 
-    # 영양소 열 숫자 변환
-    for key, column in NUTRIENT_COLUMNS.items():
-
-        if column in df.columns:
-            df[column] = pd.to_numeric(
-                df[column],
-                errors="coerce"
-            )
-
-    # 동일 식품명이 여러 개라면 100g 기준 자료를 우선
+    # 같은 식품명이 여러 개면 100g 기준 우선
     df["단위우선순위"] = (
         df["기준단위"]
-        .map({"100g": 0, "100ml": 1})
+        .map({
+            "100g": 0,
+            "100ml": 1
+        })
     )
 
     df = df.sort_values(
@@ -203,7 +247,10 @@ def get_food_names():
     df = load_food_database()
 
     return sorted(
-        df["식품명"].dropna().unique().tolist()
+        df["식품명"]
+        .dropna()
+        .unique()
+        .tolist()
     )
 
 
@@ -232,7 +279,7 @@ def search_food(keyword, limit=30):
 
 
 # ==================================================
-# 식품 영양 정보
+# 식품 영양 정보 조회
 # ==================================================
 
 def get_food_info(food_name):
@@ -251,13 +298,14 @@ def get_food_info(food_name):
     info = {
         "name": row["식품명"],
         "basis": row["기준단위"],
-        "basis_value": to_number(row["기준값"]),
+        "basis_value": to_number(row["기준값"])
     }
 
     for key, column in NUTRIENT_COLUMNS.items():
 
         if column in df.columns:
             info[key] = to_number(row[column])
+
         else:
             info[key] = None
 
@@ -265,7 +313,7 @@ def get_food_info(food_name):
 
 
 # ==================================================
-# 섭취량에 따른 영양소 계산
+# 실제 섭취량 기준 영양소 계산
 # ==================================================
 
 def calculate_nutrients(food_name, amount):
@@ -276,19 +324,23 @@ def calculate_nutrients(food_name, amount):
         return None
 
     amount = to_number(amount)
+
     basis_value = info["basis_value"]
 
-    if basis_value <= 0:
+    if amount <= 0 or basis_value <= 0:
         return None
 
-    # 100g 기준이면 g, 100ml 기준이면 ml로 계산
     multiplier = amount / basis_value
 
     result = {
         "name": info["name"],
         "amount": amount,
-        "unit": "g" if info["basis"] == "100g" else "ml",
-        "basis": info["basis"],
+        "unit": (
+            "g"
+            if info["basis"] == "100g"
+            else "ml"
+        ),
+        "basis": info["basis"]
     }
 
     for key in NUTRIENT_COLUMNS:
@@ -297,6 +349,7 @@ def calculate_nutrients(food_name, amount):
 
         if value is None:
             result[key] = None
+
         else:
             result[key] = value * multiplier
 
@@ -304,7 +357,7 @@ def calculate_nutrients(food_name, amount):
 
 
 # ==================================================
-# 여러 식품의 영양소 합계
+# 여러 음식의 영양소 합계 계산
 # ==================================================
 
 def calculate_total_nutrients(food_records):
