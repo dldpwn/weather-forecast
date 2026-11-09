@@ -1,12 +1,5 @@
 from pathlib import Path
 import pandas as pd
-import streamlit as st
-import re
-
-
-# ==================================================
-# CSV 파일 경로
-# ==================================================
 
 BASE_DIR = Path(__file__).resolve().parent
 
@@ -16,7 +9,13 @@ CSV_PATH = (
     / "전국통합식품영양성분정보표준데이터.csv"
 )
 
+def load_food_database():
+    if not CSV_PATH.exists():
+        raise FileNotFoundError(
+            f"식품 데이터 파일을 찾을 수 없습니다: {CSV_PATH}"
+        )
 
+    return pd.read_csv(CSV_PATH, encoding="utf-8-sig")
 # ==================================================
 # 영양소 열 이름
 # ==================================================
